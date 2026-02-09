@@ -6,8 +6,8 @@
     <title>Laden...</title>
     <link rel="stylesheet" href="/combined-coreg.css">
     
-    <link rel="preload" href="/visuals-loader.js" as="script">
     <link rel="preload" href="/coregRenderer.js" as="script">
+    <link rel="preload" href="/initFlow-lite.js" as="script">
 </head>
 <body data-theme="dark">
 
@@ -118,7 +118,7 @@
 
         <section id="step-ivr" class="flow-section">
             <div class="container text-center">
-                <img id="campaign-ivr-image" src="" alt="" style="max-width:300px;">
+                <img id="campaign-ivr-image" src="" alt="Bel ons" style="max-width:300px;">
                 <div id="ivr-content">
                     </div>
             </div>
@@ -138,13 +138,16 @@
     <footer id="dynamic-footer"></footer>
 
     <script>
-        // Identificatie voor multitenancy
+        // Identificatie voor multitenancy tracking
         window.CURRENT_DOMAIN = window.location.hostname;
-        // Slug bepaling
+        
+        // Bepaal de campagne slug op basis van de URL
         window.CAMPAIGN_SLUG = window.location.pathname.replace(/^\/|\/$/g, '') || "home";
+        
+        // API Base URL voor cross-domain requests
+        window.API_BASE = "https://globalcoregflow-nl.vercel.app";
     </script>
     
-    <script src="/visuals-loader.js"></script>
     <script src="/coregRenderer.js"></script>
     <script src="/formSubmit.js"></script>
     <script src="/footer-loader.js"></script>
