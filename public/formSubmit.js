@@ -1,97 +1,42 @@
-// =============================================================
-// ✅ formSubmit.js — Geoptimaliseerd voor Headless Flow
-// =============================================================
+/**
+ * ✅ formSubmit.js — Met IP-lookup en volledige payload
+ */
+async function getIpOnce() {
+  let ip = sessionStorage.getItem("user_ip");
+  if (ip) return ip;
+  try {
+    const res = await fetch("https://api.ipify.org?format=json");
+    const data = await res.json();
+    ip = data.ip || "0.0.0.0";
+  } catch { ip = "0.0.0.0"; }
+  sessionStorage.setItem("user_ip", ip);
+  return ip;
+}
 
-if (!window.formSubmitInitialized) {
-  window.formSubmitInitialized = true;
-  window.submittedCampaigns = window.submittedCampaigns || new Set();
+async function buildPayload(campaign = {}) {
+  const ip = await getIpOnce(); // 🔍 IP ophalen voor anti-fraude
+  const t_id = sessionStorage.getItem("t_id") || crypto.randomUUID();
 
-  const SLIDEUP_TEMPLATE = `
-    <div class="sponsor-slideup" id="sponsor-slideup">
-      <h3 class="slideup-title">Bijna klaar!</h3>
-      <p class="slideup-text">
-        Vind je het goed dat onze <button type="button" class="slideup-partner-link open-sponsor-popup">partners</button> 
-        je vrijblijvend informeren over hun acties?
-      </p>
-      <div class="slideup-actions">
-        <button type="button" id="slideup-confirm" class="cta-primary">
-          <span>Ja, ga verder</span>
-          <div class="slideup-spinner"></div>
-        </button>
-        <button type="button" id="slideup-deny" class="slideup-deny">Nee, liever niet</button>
-      </div>
-    </div>
-  `;
-
-  document.addEventListener("DOMContentLoaded", () => {
-    const urlParams = new URLSearchParams(window.location.search);
-    ["t_id", "aff_id", "sub_id", "sub2", "offer_id"].forEach(key => {
-      const val = urlParams.get(key);
-      if (val) sessionStorage.setItem(key, val);
-    });
-
-    const form = document.getElementById("lead-form");
-    if (form && form.dataset.sponsorSlideup === "true") {
-      form.insertAdjacentHTML('beforeend', SLIDEUP_TEMPLATE);
-    }
-  });
-
-  async function buildPayload(campaign = {}) {
-    const t_id = sessionStorage.getItem("t_id") || crypto.randomUUID();
-    const payload = {
-      gender: sessionStorage.getItem("gender") || "",
-      firstname: sessionStorage.getItem("firstname") || "",
-      lastname: sessionStorage.getItem("lastname") || "",
-      email: sessionStorage.getItem("email") || "",
-      dob: sessionStorage.getItem("dob") || "",
-      t_id: t_id,
-      aff_id: sessionStorage.getItem("aff_id") || "unknown",
-      offer_id: sessionStorage.getItem("offer_id") || "unknown",
-      sub_id: sessionStorage.getItem("sub_id") || "unknown",
-      is_shortform: campaign.is_shortform || false,
-    };
-    return payload;
+  // Datum formaat correctie naar ISO
+  const dobValue = sessionStorage.getItem("dob");
+  let dob = "";
+  if (dobValue?.includes("/")) {
+    const [dd, mm, yyyy] = dobValue.split("/");
+    dob = `${yyyy}-${mm.padStart(2,"0")}-${dd.padStart(2,"0")}`;
   }
 
-  async function finalizeShortForm() {
-    console.log("🚀 Shortform afronden...");
-    sessionStorage.setItem("shortFormCompleted", "true");
-    // Signaal naar Flow Engine
-    document.dispatchEvent(new Event("shortFormSubmitted"));
-  }
-
-  document.addEventListener("DOMContentLoaded", () => {
-    const form = document.getElementById("lead-form");
-    if (!form) return;
-
-    form.addEventListener("submit", async (e) => {
-      e.preventDefault();
-      
-      const genderEl = form.querySelector("input[name='gender']:checked");
-      if (genderEl) sessionStorage.setItem("gender", genderEl.value);
-      
-      sessionStorage.setItem("firstname", document.getElementById("firstname").value);
-      sessionStorage.setItem("lastname", document.getElementById("lastname").value);
-      sessionStorage.setItem("email", document.getElementById("email").value);
-      sessionStorage.setItem("dob", document.getElementById("dob").value);
-
-      const useSlideUp = form.dataset.sponsorSlideup === "true";
-      if (useSlideUp) {
-        document.getElementById("sponsor-slideup").classList.add("is-visible");
-      } else {
-        await finalizeShortForm();
-      }
-    });
-
-    document.addEventListener("click", async (e) => {
-      if (e.target.id === "slideup-confirm") {
-        sessionStorage.setItem("sponsorsAccepted", "true");
-        await finalizeShortForm();
-      }
-      if (e.target.id === "slideup-deny") {
-        sessionStorage.setItem("sponsorsAccepted", "false");
-        await finalizeShortForm();
-      }
-    });
-  });
+  return {
+    cid: campaign.cid || null,
+    sid: campaign.sid || null,
+    firstname: sessionStorage.getItem("firstname"),
+    lastname: sessionStorage.getItem("lastname"),
+    email: sessionStorage.getItem("email"),
+    gender: sessionStorage.getItem("gender"),
+    dob: dob,
+    t_id: t_id,
+    ip_address: ip,
+    optin_date: new Date().toISOString().split(".")[0] + "+0000", // Databowl formaat
+    aff_id: sessionStorage.getItem("aff_id") || "unknown",
+    is_shortform: campaign.is_shortform || false
+  };
 }
