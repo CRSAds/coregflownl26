@@ -1,243 +1,56 @@
 /* ============================================================
-   GLOBAL VARIABLES & RESET
+   1. RESET & BASIS (Vervangt SwipePages hacks)
    ============================================================ */
 :root {
-  /* Kleuren */
-  --ld-primary: #14B670;
-  --ld-primary-hover: #11985a;
-  --ld-text-dark: #111111;
-  --ld-gray-bg: #f5f5f5;
-  --ld-gray-border: #d5e0df;
-  
-  /* Campagne kleur (dynamisch overschreven door JS) */
-  --campaign-primary: var(--ld-primary);
-
-  /* Fonts & Vormgeving */
-  --form-font: "Plus Jakarta Sans", Inter, system-ui, -apple-system, sans-serif;
-  --radius-input: 8px;
-  --radius-button: 10px;
+  --primary-color: #14B670; /* Dynamisch aanpasbaar via Directus */
+  --bg-color: #ffffff;
+  --text-color: #111111;
+  --input-border: #d5e0df;
+  --radius: 8px;
+  --font-main: 'Inter', system-ui, -apple-system, sans-serif;
 }
 
-* { box-sizing: border-box; }
+/* Dark Theme Variabelen */
+[data-theme="dark"] {
+  --bg-color: #1a1a1a;
+  --text-color: #ffffff;
+  --input-border: #333333;
+}
 
-body {
+html, body {
   margin: 0;
-  font-family: var(--form-font);
-  background-color: #f4f4f4;
-  color: var(--ld-text-dark);
+  padding: 0;
+  width: 100%;
+  height: 100%;
+  font-family: var(--font-main);
+  background-color: var(--bg-color);
+  color: var(--text-color);
+  /* Natuurlijke scroll zonder JS-force */
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
 }
 
 /* ============================================================
-   LAYOUT WRAPPERS (Ter vervanging van SwipePages)
+   2. LAYOUT (Geen .swipe-page-wrapper meer nodig)
    ============================================================ */
-.swipe-page-wrapper {
-  max-width: 800px;
+.main-flow-container {
+  max-width: 600px; /* Focus op conversie */
   margin: 0 auto;
-  background: #fff;
   min-height: 100vh;
-  box-shadow: 0 0 20px rgba(0,0,0,0.05);
+  display: flex;
+  flex-direction: column;
 }
 
-.container { padding: 20px; }
-.text-center { text-align: center; }
-.mt-20 { margin-top: 20px; }
-
-/* ============================================================
-   PROGRESS BAR
-   ============================================================ */
-.ld-progress-wrap { margin-bottom: 12px; }
-
-.ld-progress-info {
-  display: flex; justify-content: space-between;
-  margin-bottom: 8px; font-weight: 600; font-size: 14px;
-}
-
-.progress-value { color: #4B7C82; font-weight: 700; }
-
-.ld-progress {
-  border-radius: 4px; height: 24px;
-  background-color: rgba(20, 182, 112, 0.15);
-  position: relative; overflow: hidden;
-}
-
-.ld-progress .progress-bar {
-  border-radius: inherit; height: 100%;
-  background-color: var(--campaign-primary);
-  width: 0; transition: width 1.5s ease-out;
-}
-
-/* ============================================================
-   COREG SECTIONS
-   ============================================================ */
-.coreg-inner {
-  background: #fff; max-width: 550px; margin: 0 auto;
-  padding: 28px 24px; border-radius: 12px;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.05);
-}
-
-.coreg-section { margin-bottom: 24px; display: none; } /* Standaard verborgen, JS toggelt dit */
-
-.coreg-section h3 {
-  font-size: 18px; font-weight: 700; margin-bottom: 12px;
-  line-height: 1.35; color: var(--ld-text-dark);
-}
-
-.coreg-section p {
-  font-size: 14px; margin-bottom: 22px; color: #555; line-height: 1.55;
-}
-
-.coreg-image {
-  width: 100%; height: auto; border-radius: 8px; margin-bottom: 16px;
-}
-
-/* ============================================================
-   BUTTONS & INPUTS
-   ============================================================ */
-button, .cta-primary, .btn-answer, .btn-skip {
-  display: block; width: 100%;
-  padding: 14px; border: none; border-radius: var(--radius-button);
-  font-size: 16px; font-weight: 700; cursor: pointer;
-  transition: all 0.2s ease;
-  font-family: var(--form-font);
-  text-align: center;
-}
-
-/* Primaire Actie Knoppen */
-.cta-primary, 
-.btn-answer[data-answer="yes"], 
-.btn-answer[data-answer="ja"],
-.flow-next[data-answer="yes"] {
-  background-color: var(--campaign-primary);
-  color: #fff;
-}
-
-.cta-primary:hover, .btn-answer[data-answer="yes"]:hover {
-  filter: brightness(1.1); transform: translateY(-1px);
-}
-
-/* Secundaire / Skip Knoppen */
-.btn-skip, 
-.btn-answer[data-answer="no"], 
-.btn-answer[data-answer="nee"] {
-  background-color: var(--ld-gray-bg);
-  color: #444;
-  margin-top: 8px;
-}
-
-.btn-skip:hover { background-color: #e0e0e0; }
-
-/* Inputs */
-input[type="text"], input[type="email"], input[type="tel"], select {
-  width: 100%; height: 48px; padding: 0 12px;
-  margin-bottom: 10px;
-  border: 1.5px solid var(--ld-gray-border);
-  border-radius: var(--radius-input);
-  font-size: 16px; font-family: var(--form-font);
-  background: #fff;
-}
-
-input:focus, select:focus {
-  outline: none; border-color: var(--campaign-primary);
-  box-shadow: 0 0 0 3px rgba(20,182,112,0.1);
-}
-
-/* ============================================================
-   FORM SPECIFICS (Gender & Consent)
-   ============================================================ */
-.gender-group { display: flex; gap: 12px; margin-bottom: 16px; }
-
-.gender-group label {
-  flex: 1; cursor: pointer; position: relative;
-}
-
-.gender-group input[type="radio"] {
-  position: absolute; opacity: 0; pointer-events: none;
-}
-
-/* Custom Radio Button styling (Button look) */
-.gender-group label span {
-  display: flex; align-items: center; justify-content: center;
-  height: 48px; border: 1px solid var(--ld-gray-border);
-  border-radius: var(--radius-input);
-  background: #fff; color: #111; font-weight: 600;
-  transition: all 0.2s;
-}
-
-/* Selected state */
-.gender-group input:checked + span {
-  background-color: #e5e7eb; border-color: #d1d5db;
-  color: #000; font-weight: 700;
-}
-.gender-group input:checked + span::before {
-  content: "✓"; margin-right: 6px; font-weight: 800;
-}
-
-/* Consent Module */
-.consent-module { font-size: 13px; margin: 12px 0; line-height: 1.4; }
-.consent-row { display: flex; gap: 10px; margin-bottom: 8px; }
-.consent-row input { width: 16px; height: 16px; margin-top: 2px; accent-color: var(--campaign-primary); }
-
-/* ============================================================
-   SPONSOR SLIDE-UP (Popup onderaan)
-   ============================================================ */
-.sponsor-slideup {
-  position: fixed; bottom: 0; left: 0; width: 100%;
-  background: #fff; padding: 24px 20px;
-  border-radius: 12px 12px 0 0;
-  box-shadow: 0 -4px 30px rgba(0,0,0,0.15);
-  transform: translateY(110%); transition: transform 0.4s ease-out;
-  z-index: 1000; text-align: center;
-}
-.sponsor-slideup.is-visible { transform: translateY(0); }
-
-.slideup-title { font-size: 18px; font-weight: 800; margin: 0 0 8px 0; }
-.slideup-text { font-size: 14px; color: #555; margin-bottom: 20px; }
-
-/* ============================================================
-   SKELETON LOADER (Voor Headless gevoel)
-   ============================================================ */
-.skeleton {
-  background: linear-gradient(110deg, #ececec 8%, #f5f5f5 18%, #ececec 33%);
-  background-size: 200% 100%;
-  animation: 1.5s shine linear infinite;
-  color: transparent !important; border-radius: 5px;
-}
-@keyframes shine { to { background-position-x: -200%; } }
-
-.skeleton-text { height: 16px; width: 80%; margin: 10px auto; display: block; }
-.skeleton-title { height: 32px; width: 60%; margin: 20px auto; display: block; }
-.skeleton-img { width: 100%; height: 250px; display: block; }
-
-/* ============================================================
-   UTILITIES
-   ============================================================ */
-.skip-link {
-  text-align: center; display: block; margin-top: 10px;
-  color: #888; text-decoration: none; font-size: 13px;
-}
-.skip-link:hover { text-decoration: underline; color: #333; }
-
-#page-loader {
-  position: fixed; inset: 0; background: #fff; z-index: 9999;
-  display: flex; justify-content: center; align-items: center;
-}
-.spinner {
-  width: 50px; height: 50px; border: 5px solid #eee;
-  border-top-color: var(--campaign-primary); border-radius: 50%;
-  animation: spin 1s linear infinite;
-}
-@keyframes spin { to { transform: rotate(360deg); } }
-
-/* ============================================================
-   FLOW SECTIONS (De SwipePages vervanger)
-   ============================================================ */
 .flow-section {
-  display: none; /* Standaard alles verborgen */
-  animation: fadeIn 0.5s ease;
+  display: none; /* Flow-engine toggelt dit */
+  padding: 40px 20px;
+  width: 100%;
+  box-sizing: border-box;
+  animation: fadeIn 0.4s ease-out;
 }
 
 .flow-section.active {
-  display: block; /* Alleen de actieve sectie tonen */
+  display: block;
 }
 
 @keyframes fadeIn {
@@ -245,16 +58,150 @@ input:focus, select:focus {
   to { opacity: 1; transform: translateY(0); }
 }
 
-/* Specifiek voor de Lander (Stap 1) */
-.hero-content {
-  text-align: center;
-  padding: 40px 20px;
-  max-width: 600px;
-  margin: 0 auto;
+/* ============================================================
+   3. FORMULIEREN (Modern-form-v2 o.b.v. jouw snippets)
+   ============================================================ */
+.modern-form-v2 {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
 }
 
-/* Specifiek voor Short Form (Stap 2) */
-.form-header {
-  text-align: center;
-  margin-bottom: 20px;
+.field-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+label {
+  font-weight: 600;
+  font-size: 14px;
+}
+
+input[type="text"],
+input[type="email"],
+input[type="tel"],
+input[type="number"],
+select {
+  width: 100%;
+  padding: 14px;
+  border: 1px solid var(--input-border);
+  border-radius: var(--radius);
+  background: transparent;
+  color: inherit;
+  font-size: 16px;
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+input:focus {
+  border-color: var(--primary-color);
+}
+
+input[readonly] {
+  opacity: 0.7;
+  background-color: rgba(0,0,0,0.05);
+}
+
+/* Gender Segment Styling */
+.gender-segment {
+  display: flex;
+  gap: 10px;
+}
+
+.gender-segment label {
+  flex: 1;
+  cursor: pointer;
+}
+
+.gender-segment input {
+  display: none;
+}
+
+.gender-segment span {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 12px;
+  border: 1px solid var(--input-border);
+  border-radius: var(--radius);
+  font-weight: 500;
+  transition: all 0.2s;
+}
+
+.gender-segment input:checked + span {
+  background-color: var(--primary-color);
+  color: white;
+  border-color: var(--primary-color);
+}
+
+/* ============================================================
+   4. COMPONENTEN (Knoppen, Progress, etc.)
+   ============================================================ */
+.cta-primary {
+  background-color: var(--primary-color);
+  color: white;
+  padding: 16px;
+  border: none;
+  border-radius: var(--radius);
+  font-size: 18px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: transform 0.1s, opacity 0.2s;
+}
+
+.cta-primary:active {
+  transform: scale(0.98);
+}
+
+.cta-primary:hover {
+  opacity: 0.9;
+}
+
+/* Progress Bar */
+#coreg-container {
+  width: 100%;
+}
+
+.ld-progress {
+  height: 8px;
+  background: var(--input-border);
+  border-radius: 4px;
+  overflow: hidden;
+  margin-bottom: 25px;
+}
+
+.progress-bar {
+  height: 100%;
+  background: var(--primary-color);
+  width: 0%;
+  transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Footer & Popups */
+.footer-popup {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.footer-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0,0,0,0.8);
+}
+
+.footer-content {
+  position: relative;
+  background: var(--bg-color);
+  color: var(--text-color);
+  padding: 30px;
+  max-width: 500px;
+  width: 90%;
+  border-radius: 12px;
+  max-height: 80vh;
+  overflow-y: auto;
 }
