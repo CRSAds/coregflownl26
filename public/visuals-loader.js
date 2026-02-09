@@ -6,7 +6,7 @@
   async function loadVisuals() {
     try {
       const slug = window.CAMPAIGN_SLUG || "hotel-specials";
-      const res = await fetch("https://globalcoregflow-nl.vercel.app/api/campaignVisuals.js");
+      const res = await fetch("/api/campaignVisuals.js");
       const { data } = await res.json();
       const visual = data.find(v => v.slug === slug);
 
