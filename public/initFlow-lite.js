@@ -1,79 +1,57 @@
-/**
- * ✅ initFlow-lite.js — Herstelde Flow Engine
- */
 (function () {
-  let flowOrder = []; 
+  let flowOrder = [];
   let currentStepIndex = 0;
 
   async function initFlow() {
-    const slug = window.CAMPAIGN_SLUG || "home";
+    const urlParams = new URLSearchParams(window.location.search);
+    const slug = urlParams.get('slug') || window.location.pathname.split('/').filter(Boolean).pop();
+    
     console.log(`🚀 Flow Engine gestart voor slug: ${slug}`);
 
     try {
       const res = await fetch(`/api/campaignVisuals.js?slug=${slug}`);
       const result = await res.json();
 
-      if (!result || !result.data) {
-        throw new Error("Geen campagne data gevonden");
-      }
+      if (!result.data) throw new Error("Campagne data niet gevonden");
       
       const config = result.data;
 
-      // Thema toepassen op de body
-      document.body.setAttribute("data-theme", config.theme || "light");
+      // 1. Direct visuals invullen (Vervangt visuals-loader.js)
+      document.title = config.title;
+      const titleEl = document.getElementById("campaign-title");
+      if (titleEl) titleEl.innerHTML = config.title;
+      
+      const paraEl = document.getElementById("campaign-paragraph");
+      if (paraEl) paraEl.innerHTML = config.paragraph;
 
-      // Flow volgorde instellen (met fallback)
-      flowOrder = (config.flow && config.flow.length > 0) 
-        ? config.flow 
-        : ["lander", "shortform", "coreg", "sovendus"];
+      const heroImg = document.getElementById("campaign-hero-image");
+      if (heroImg && config.hero_image) {
+        heroImg.src = config.hero_image;
+        heroImg.style.display = 'block';
+      }
+
+      // 2. Thema & Flow
+      document.body.setAttribute("data-theme", config.theme || "light");
+      flowOrder = config.flow;
 
       renderStep(0);
     } catch (err) {
       console.error("❌ Kritieke flow error:", err.message);
-      // Nood-fallback om de pagina niet leeg te laten
+      // Fallback
       flowOrder = ["lander", "shortform", "coreg", "sovendus"];
       renderStep(0);
     }
   }
 
   function renderStep(index) {
-    if (index >= flowOrder.length) return;
-
     const stepName = flowOrder[index];
-    const targetId = `step-${stepName}`;
-
-    // Verberg alle secties
-    document.querySelectorAll(".flow-section").forEach(sec => sec.classList.remove("active"));
-
-    const targetSection = document.getElementById(targetId);
-    if (targetSection) {
-      targetSection.classList.add("active");
-      window.scrollTo({ top: 0, behavior: "smooth" });
-      
-      // Activeer stap-specifieke logica
-      if (stepName === "coreg" && typeof window.initCoregFlow === "function") window.initCoregFlow();
-      if (stepName === "sovendus" && typeof window.setupSovendus === "function") window.setupSovendus();
-    } else {
-      console.warn(`⚠️ Sectie ${targetId} niet gevonden. Overslaan...`);
-      nextStep();
+    document.querySelectorAll(".flow-section").forEach(s => s.classList.remove("active"));
+    const target = document.getElementById(`step-${stepName}`);
+    if (target) {
+      target.classList.add("active");
+      if (stepName === "coreg") window.initCoregFlow?.();
     }
   }
 
-  function nextStep() {
-    currentStepIndex++;
-    if (currentStepIndex < flowOrder.length) {
-      renderStep(currentStepIndex);
-    }
-  }
-
-  // Luister naar custom events van formulieren
-  document.addEventListener("shortFormSubmitted", nextStep);
-  document.addEventListener("coregFinished", nextStep);
-  
-  // Start engine
-  if (document.readyState === "loading") {
-    document.addEventListener("DOMContentLoaded", initFlow);
-  } else {
-    initFlow();
-  }
+  document.addEventListener("DOMContentLoaded", initFlow);
 })();
