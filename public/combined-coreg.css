@@ -1,40 +1,28 @@
 /* ============================================================
-   1. RESET & BASIS (Vervangt SwipePages hacks)
+   ✅ combined-coreg.css — Headless Full Styling Version
    ============================================================ */
+
 :root {
-  --primary-color: #14B670; /* Dynamisch aanpasbaar via Directus */
-  --bg-color: #ffffff;
-  --text-color: #111111;
-  --input-border: #d5e0df;
-  --radius: 8px;
-  --font-main: 'Inter', system-ui, -apple-system, sans-serif;
+  --ld-primary: #14B670;
+  --ld-primary-hover: #11985a;
+  --ld-text-dark: #111111;
+  --ld-gray-border: #d5e0df;
+  --radius-input: 8px;
+  --radius-button: 10px;
+  --font-main: "Plus Jakarta Sans", Inter, system-ui, sans-serif;
 }
 
-/* Dark Theme Variabelen */
-[data-theme="dark"] {
-  --bg-color: #1a1a1a;
-  --text-color: #ffffff;
-  --input-border: #333333;
-}
-
-html, body {
+/* --- Basis & Layout --- */
+body {
   margin: 0;
-  padding: 0;
-  width: 100%;
-  height: 100%;
   font-family: var(--font-main);
-  background-color: var(--bg-color);
-  color: var(--text-color);
-  /* Natuurlijke scroll zonder JS-force */
+  background-color: #f4f4f4;
+  color: var(--ld-text-dark);
   overflow-x: hidden;
-  -webkit-font-smoothing: antialiased;
 }
 
-/* ============================================================
-   2. LAYOUT (Geen .swipe-page-wrapper meer nodig)
-   ============================================================ */
 .main-flow-container {
-  max-width: 600px; /* Focus op conversie */
+  max-width: 600px; /* Focus op mobiele conversie */
   margin: 0 auto;
   min-height: 100vh;
   display: flex;
@@ -42,71 +30,61 @@ html, body {
 }
 
 .flow-section {
-  display: none; /* Flow-engine toggelt dit */
+  display: none;
   padding: 40px 20px;
-  width: 100%;
-  box-sizing: border-box;
   animation: fadeIn 0.4s ease-out;
 }
 
-.flow-section.active {
-  display: block;
-}
+.flow-section.active { display: block; }
 
 @keyframes fadeIn {
   from { opacity: 0; transform: translateY(10px); }
   to { opacity: 1; transform: translateY(0); }
 }
 
-/* ============================================================
-   3. FORMULIEREN (Modern-form-v2 o.b.v. jouw snippets)
-   ============================================================ */
+/* =====================================================
+   GLASSMORPHISM — LIGHT THEME (Overgenomen uit Swipe-versie)
+   ===================================================== */
+[data-theme="light"], body:not([data-theme="dark"]) {
+  --form-bg: rgba(255, 255, 255, 0.85);
+  --input-bg: #ffffff;
+  --text-color: #111111;
+}
+
 .modern-form-v2 {
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
+  background-color: var(--form-bg) !important;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.6);
+  border-radius: 16px;
+  padding: 24px !important;
+  box-shadow: 0 4px 25px rgba(0, 0, 0, 0.08);
 }
 
-.field-group {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
+/* =====================================================
+   DARK THEME
+   ===================================================== */
+[data-theme="dark"] {
+  --form-bg: rgba(0, 0, 0, 0.5);
+  --input-bg: #ffffff;
+  --text-color: #ffffff;
+  background-color: #1a1a1a;
 }
 
-label {
-  font-weight: 600;
-  font-size: 14px;
+[data-theme="dark"] .modern-form-v2 {
+  background-color: var(--form-bg) !important;
+  backdrop-filter: blur(5px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: #ffffff;
 }
 
-input[type="text"],
-input[type="email"],
-input[type="tel"],
-input[type="number"],
-select {
-  width: 100%;
-  padding: 14px;
-  border: 1px solid var(--input-border);
-  border-radius: var(--radius);
-  background: transparent;
-  color: inherit;
-  font-size: 16px;
-  outline: none;
-  transition: border-color 0.2s;
-}
-
-input:focus {
-  border-color: var(--primary-color);
-}
-
-input[readonly] {
-  opacity: 0.7;
-  background-color: rgba(0,0,0,0.05);
-}
-
-/* Gender Segment Styling */
+/* =====================================================
+   GENDER SELECTIE (Met Vinkje & Vulling)
+   ===================================================== */
 .gender-segment {
   display: flex;
-  gap: 10px;
+  gap: 12px;
+  margin-bottom: 20px;
 }
 
 .gender-segment label {
@@ -114,94 +92,76 @@ input[readonly] {
   cursor: pointer;
 }
 
-.gender-segment input {
-  display: none;
+.gender-segment input[type="radio"] {
+  position: absolute;
+  opacity: 0;
 }
 
 .gender-segment span {
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 12px;
-  border: 1px solid var(--input-border);
-  border-radius: var(--radius);
-  font-weight: 500;
+  min-height: 48px;
+  border: 1.5px solid var(--ld-gray-border);
+  border-radius: var(--radius-input);
+  background: var(--input-bg);
+  font-weight: 600;
   transition: all 0.2s;
 }
 
+/* Geselecteerde staat: Neutrale vulling + vinkje */
 .gender-segment input:checked + span {
-  background-color: var(--primary-color);
-  color: white;
-  border-color: var(--primary-color);
+  background-color: #e5e7eb !important;
+  color: #111111 !important;
+  border-color: #d1d5db !important;
+  font-weight: 700;
 }
 
-/* ============================================================
-   4. COMPONENTEN (Knoppen, Progress, etc.)
-   ============================================================ */
+.gender-segment input:checked + span::before {
+  content: "✓";
+  margin-right: 8px;
+  font-weight: 800;
+}
+
+/* --- Knoppen --- */
 .cta-primary {
-  background-color: var(--primary-color);
+  background: linear-gradient(135deg, #14B670 0%, #0e9f5d 100%);
   color: white;
   padding: 16px;
-  border: none;
-  border-radius: var(--radius);
-  font-size: 18px;
+  border-radius: var(--radius-button);
   font-weight: 700;
-  cursor: pointer;
-  transition: transform 0.1s, opacity 0.2s;
+  font-size: 18px;
+  box-shadow: 0 4px 15px rgba(20, 182, 112, 0.35);
 }
 
-.cta-primary:active {
-  transform: scale(0.98);
-}
-
-.cta-primary:hover {
-  opacity: 0.9;
-}
-
-/* Progress Bar */
-#coreg-container {
-  width: 100%;
-}
-
+/* =====================================================
+   PROGRESS BAR (Getrapte animatie ondersteuning)
+   ===================================================== */
 .ld-progress {
-  height: 8px;
-  background: var(--input-border);
-  border-radius: 4px;
+  height: 12px;
+  background-color: rgba(20, 182, 112, 0.15);
+  border-radius: 6px;
   overflow: hidden;
-  margin-bottom: 25px;
+  margin: 15px 0;
 }
 
 .progress-bar {
   height: 100%;
-  background: var(--primary-color);
+  background-color: var(--ld-primary);
   width: 0%;
-  transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+  /* De animatie zelf wordt via JS geregeld door progressbar-anim.js */
+  transition: width 0.3s ease-out;
 }
 
-/* Footer & Popups */
-.footer-popup {
-  position: fixed;
-  inset: 0;
-  z-index: 9999;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+/* Afbeeldingen Responsiveness */
+img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+  margin: 0 auto 20px;
 }
 
-.footer-overlay {
-  position: absolute;
-  inset: 0;
-  background: rgba(0,0,0,0.8);
-}
-
-.footer-content {
-  position: relative;
-  background: var(--bg-color);
-  color: var(--text-color);
-  padding: 30px;
-  max-width: 500px;
-  width: 90%;
-  border-radius: 12px;
-  max-height: 80vh;
-  overflow-y: auto;
+#campaign-hero-image {
+  border-radius: 0 0 20px 20px;
+  width: 100%;
 }
