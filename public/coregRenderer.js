@@ -1,16 +1,32 @@
 // =============================================================
-// ✅ coregRenderer.js — Headless Versie
+// ✅ coregRenderer.js — Herstelde Versie
 // =============================================================
+
+// Helper-functie om de coreg-campagnes op te halen bij de API
+async function fetchCampaigns() {
+  try {
+    const res = await fetch("/api/coreg.js", { cache: "no-store" });
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    const json = await res.json();
+    return json.data || [];
+  } catch (err) {
+    console.error("❌ Coreg fetch error:", err);
+    return [];
+  }
+}
 
 async function initCoregFlow() {
   console.log("🎯 Coreg Renderer gestart");
   const container = document.getElementById("coreg-container");
   if (!container) return;
 
-  // Haal campagnes op (bestaande API call)
   const campaigns = await fetchCampaigns();
+  if (!campaigns.length) {
+    console.warn("⚠️ Geen coreg campagnes gevonden.");
+    document.dispatchEvent(new Event("coregFinished"));
+    return;
+  }
   
-  // Progress bar logica is nu simpeler (Flow Engine regelt het totaal)
   container.innerHTML = `<div id="coreg-sections"></div>`;
   const sectionsContainer = container.querySelector("#coreg-sections");
 
@@ -18,42 +34,43 @@ async function initCoregFlow() {
     sectionsContainer.innerHTML += renderCampaignBlock(camp, idx === 0);
   });
 
-  // Event delegation voor antwoorden
-  container.addEventListener("click", async (e) => {
+  // Event delegation voor interactie
+  container.onclick = async (e) => {
     const btn = e.target.closest(".btn-answer, .btn-skip");
     if (!btn) return;
 
     const section = btn.closest(".coreg-section");
-    const isNegative = btn.classList.contains("btn-skip") || btn.dataset.answer === "no";
     
-    // Antwoord opslaan logic...
-    console.log("✅ Antwoord geregistreerd:", btn.dataset.answer);
+    // Logica voor antwoord opslaan (voorbeeld)
+    console.log(`✅ Antwoord voor ${btn.dataset.campaign}: ${btn.dataset.answer}`);
 
-    // Navigatie naar volgende coreg of volgende stap
     const nextSection = section.nextElementSibling;
     if (nextSection) {
       section.style.display = "none";
       nextSection.style.display = "block";
-      window.scrollTo(0, 0); // Natuurlijke scroll
+      window.scrollTo({ top: 0, behavior: "smooth" });
     } else {
-      console.log("🏁 Alle coregs beantwoord.");
+      console.log("🏁 Coreg flow afgerond");
       document.dispatchEvent(new Event("coregFinished"));
     }
-  });
+  };
 }
 
 function renderCampaignBlock(campaign, isFirst) {
+  const imageUrl = campaign.image?.id 
+    ? `https://cms.core.909play.com/assets/${campaign.image.id}` 
+    : "https://via.placeholder.com/600x300";
+
   return `
     <div class="coreg-section" data-cid="${campaign.cid}" style="display: ${isFirst ? 'block' : 'none'}">
-      <img src="${campaign.image}" class="coreg-image">
+      <img src="${imageUrl}" class="coreg-image" alt="${campaign.title}">
       <h3>${campaign.title}</h3>
-      <p>${campaign.description}</p>
+      <p>${campaign.description || ""}</p>
       <div class="coreg-answers">
-        <button class="btn-answer cta-primary" data-answer="yes" data-campaign="${campaign.id}">Ja</button>
+        <button class="cta-primary btn-answer" data-answer="yes" data-campaign="${campaign.id}">Ja</button>
         <button class="btn-skip" data-answer="no" data-campaign="${campaign.id}">Nee</button>
       </div>
     </div>`;
 }
 
-// Global hook voor Flow Engine
 window.initCoregFlow = initCoregFlow;
