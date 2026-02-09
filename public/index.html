@@ -1,215 +1,155 @@
 <!DOCTYPE html>
 <html lang="nl">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Laden...</title>
-  <link rel="stylesheet" href="/combined-coreg.css">
-  
-  <link rel="preload" href="/visuals-loader.js" as="script">
-  <link rel="preload" href="/coregRenderer.js" as="script">
-</head>
-<body>
-
-  <div class="swipe-page-wrapper">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Laden...</title>
+    <link rel="stylesheet" href="/combined-coreg.css">
     
-    <section id="step-1-lander" class="flow-section active">
-      <div id="hero-skeleton" class="skeleton skeleton-img"></div>
-      <img id="campaign-hero-image" src="" alt="" style="display:none;" onload="this.style.display='block'; document.getElementById('hero-skeleton').style.display='none'">
-      
-      <div class="container hero-content">
-        <h1 id="campaign-title" class="skeleton skeleton-title">Laden...</h1>
-        <div id="campaign-paragraph" class="skeleton skeleton-text">Even geduld...</div>
+    <link rel="preload" href="/visuals-loader.js" as="script">
+    <link rel="preload" href="/coregRenderer.js" as="script">
+</head>
+<body data-theme="dark">
+
+    <main id="flow-container" class="main-flow-container">
         
-        <button type="button" class="cta-primary mt-20" onclick="goToStep(2)">
-          Ga verder &raquo;
-        </button>
-      </div>
-    </section>
+        <section id="step-lander" class="flow-section">
+            <div class="hero-wrapper">
+                <img id="campaign-hero-image" src="" alt="" style="display:none;">
+            </div>
+            <div class="container text-center">
+                <h1 id="campaign-title">Laden...</h1>
+                <div id="campaign-paragraph">Even geduld...</div>
+                <button type="button" class="cta-primary mt-20" data-next-step>
+                    Ga verder &raquo;
+                </button>
+            </div>
+        </section>
 
-    <section id="step-2-shortform" class="flow-section">
-      <div class="container">
-        <div class="form-header">
-          <h3>Vul je gegevens in</h3>
-          <p>Om kans te maken hebben we je gegevens nodig.</p>
-        </div>
+        <section id="step-shortform" class="flow-section">
+            <div class="container">
+                <form id="lead-form" class="modern-form-v2" data-sponsor-slideup="true">
+                    <div class="gender-segment">
+                        <label>
+                            <input type="radio" name="gender" value="De Heer" required>
+                            <span>De heer</span>
+                        </label>
+                        <label>
+                            <input type="radio" name="gender" value="Mevrouw">
+                            <span>Mevrouw</span>
+                        </label>
+                    </div>
 
-        <form id="lead-form" class="modern-form-v2" data-sponsor-slideup="true">
-           <div class="field-group">
-             <label>Geslacht</label>
-             <div class="gender-segment">
-               <label><input type="radio" name="gender" value="m" required><span>Man</span></label>
-               <label><input type="radio" name="gender" value="f"><span>Vrouw</span></label>
-             </div>
-           </div>
+                    <div class="field-group">
+                        <label for="firstname">Voornaam</label>
+                        <input id="firstname" type="text" placeholder="Voornaam" required>
+                    </div>
 
-           <div class="field-group">
-             <label for="firstname">Voornaam</label>
-             <input type="text" id="firstname" name="firstname" placeholder="Je voornaam" required>
-           </div>
-           <div class="field-group">
-             <label for="lastname">Achternaam</label>
-             <input type="text" id="lastname" name="lastname" placeholder="Je achternaam" required>
-           </div>
-           <div class="field-group">
-             <label for="email">E-mailadres</label>
-             <input type="email" id="email" name="email" placeholder="Je e-mailadres" required>
-           </div>
-           
-           <button type="submit" class="cta-primary">Verder</button>
-        </form>
-      </div>
-    </section>
+                    <div class="field-group">
+                        <label for="lastname">Achternaam</label>
+                        <input id="lastname" type="text" placeholder="Achternaam" required>
+                    </div>
 
-    <section id="step-3-coreg" class="flow-section">
-      <div id="coreg-container" class="container"></div>
-      
-      <button id="coreg-finish-btn" style="display:none;" onclick="handleCoregFinish()">Next</button>
-    </section>
+                    <div class="field-group">
+                        <label for="dob">Geboortedatum</label>
+                        <input id="dob" type="text" placeholder="dd / mm / jjjj" required>
+                    </div>
 
-    <section id="step-4-longform" class="flow-section">
-      <div class="container">
-        <h3>Nog één stap...</h3>
-        <p>Vul je adresgegevens in om je deelname af te ronden.</p>
-        
-        <form id="long-form" class="modern-form-v2">
-          <div class="field-group">
-            <label>Postcode</label>
-            <input type="text" name="zip" id="zip" required>
-          </div>
-          <div class="field-group">
-            <label>Huisnummer</label>
-            <input type="text" name="housenumber" id="housenumber" required>
-          </div>
-           <div class="field-group">
-            <label>Straat</label>
-            <input type="text" name="street" id="street" required>
-          </div>
-           <div class="field-group">
-            <label>Woonplaats</label>
-            <input type="text" name="city" id="city" required>
-          </div>
-          
-          <button type="submit" class="cta-primary">Afronden</button>
-        </form>
-      </div>
-    </section>
+                    <div class="field-group">
+                        <label for="email">E-mailadres</label>
+                        <input id="email" type="email" placeholder="Vul je e-mailadres in" required>
+                    </div>
 
-    <section id="step-5-ivr" class="flow-section">
-      <div class="container text-center">
-        <img id="campaign-ivr-image" src="" alt="Call us" style="max-width:300px; margin:0 auto 20px;">
-        
-        <h2>Gefeliciteerd! 🎉</h2>
-        <p>Je deelname is ontvangen.</p>
-        
-        <div id="ivr-container">
-            <p>Bel nu om je prijs te claimen!</p>
-            <a href="tel:0800-1234" class="cta-primary" style="display:block; text-decoration:none; line-height:50px;">
-              📞 Bel Nu
-            </a>
-        </div>
-        
-        <button class="skip-link" onclick="goToStep(6)">Nee bedankt, ga verder</button>
-      </div>
-    </section>
+                    <div class="consent-module">
+                        <label class="consent-row required">
+                            <input type="checkbox" required>
+                            <span>
+                                Ik ga akkoord met de
+                                <button type="button" id="open-actievoorwaarden-inline">actievoorwaarden</button>
+                            </span>
+                        </label>
+                    </div>
 
-    <section id="step-6-sovendus" class="flow-section">
-      <div class="container">
-        <h2>Bedankt!</h2>
-        <p>Hier is een cadeautje voor jou.</p>
-        <div id="sovendus-container"></div>
-        
-        <button class="cta-primary mt-20" onclick="goToStep(7)">Verder</button>
-      </div>
-    </section>
+                    <button type="submit" class="cta-primary">Ga verder</button>
+                </form>
+            </div>
+        </section>
 
-    <section id="step-7-final" class="flow-section">
-      <div class="container text-center">
-        <h2>Tot slot...</h2>
-        <p>Bekijk deze aanbieding nog even.</p>
-        </div>
-    </section>
+        <section id="step-coreg" class="flow-section">
+            <div class="container">
+                <div id="coreg-container"></div>
+            </div>
+        </section>
 
-  </div>
+        <section id="step-longform" class="flow-section">
+            <div class="container">
+                <form id="long-form" class="modern-form-v2">
+                    <div class="field-group">
+                        <label for="postcode">Postcode</label>
+                        <input type="text" id="postcode" placeholder="1234 AB" required>
+                    </div>
 
-  <script>
-    // Slug Logic
-    (function() {
-      var slug = window.location.pathname.replace(/^\/|\/$/g, '') || "home"; 
-      window.CAMPAIGN_SLUG = slug;
-    })();
-  </script>
+                    <div class="field-group">
+                        <label for="huisnummer">Huisnummer + evt toevoeging</label>
+                        <input type="text" id="huisnummer" placeholder="10" required>
+                    </div>
 
-  <script src="/visuals-loader.js"></script>
-  <script src="/coregRenderer.js"></script>
-  <script src="/formSubmit.js"></script>
-  <script src="/swipe-body.js"></script>
-  
-  <script>
-    // Functie om naar een specifieke stap te springen
-    window.goToStep = function(stepNumber) {
-      // 1. Verberg alle secties
-      document.querySelectorAll('.flow-section').forEach(el => el.classList.remove('active'));
-      
-      // 2. Toon de juiste
-      const next = document.getElementById('step-' + stepNumber + '-' + getStepName(stepNumber));
-      if(next) {
-        next.classList.add('active');
-        window.scrollTo(0,0);
-      } else {
-        console.error("Stap niet gevonden:", stepNumber);
-      }
-    }
+                    <div class="field-group">
+                        <label for="straat">Straat</label>
+                        <input type="text" id="straat" placeholder="Wordt automatisch ingevuld" readonly required>
+                    </div>
 
-    // Helper voor ID namen
-    function getStepName(num) {
-      const names = {1:'lander', 2:'shortform', 3:'coreg', 4:'longform', 5:'ivr', 6:'sovendus', 7:'final'};
-      return names[num];
-    }
+                    <div class="field-group">
+                        <label for="woonplaats">Woonplaats</label>
+                        <input type="text" id="woonplaats" placeholder="Wordt automatisch ingevuld" readonly required>
+                    </div>
 
-    // Event Listeners voor de flow
-    document.addEventListener('DOMContentLoaded', () => {
-      
-      // A. Als Short Form succesvol is verzonden -> Ga naar Coreg (Stap 3)
-      document.addEventListener('shortFormSubmitted', () => {
-         console.log("✅ Short form klaar -> Naar Coreg");
-         goToStep(3);
-      });
+                    <div class="field-group">
+                        <label for="telefoon">Telefoonnummer</label>
+                        <input id="telefoon" type="tel" placeholder="Telefoonnummer" required>
+                    </div>
 
-      // B. Als Long Form succesvol is verzonden -> Ga naar IVR/Bedankt
-      document.addEventListener('longFormSubmitted', () => {
-         console.log("✅ Long form klaar -> Naar IVR");
-         checkIvrStatusAndProceed();
-      });
+                    <button type="button" id="submit-long-form" class="cta-primary">
+                        Verstuur aanvullende gegevens
+                    </button>
+                </form>
+            </div>
+        </section>
 
-    });
+        <section id="step-ivr" class="flow-section">
+            <div class="container text-center">
+                <img id="campaign-ivr-image" src="" alt="" style="max-width:300px;">
+                <div id="ivr-content">
+                    </div>
+            </div>
+        </section>
 
-    // C. Wordt aangeroepen door coregRenderer.js als alle vragen klaar zijn
-    window.handleCoregFinish = function() {
-      const needsLongForm = sessionStorage.getItem("requiresLongForm") === "true";
-      console.log("✅ Coreg klaar. Longform nodig?", needsLongForm);
-      
-      if (needsLongForm) {
-        goToStep(4); // Naar Long Form
-      } else {
-        checkIvrStatusAndProceed(); // Direct naar einde
-      }
-    }
+        <section id="step-sovendus" class="flow-section">
+            <div class="container">
+                <div id="sovendus-loading">
+                    <p>Even geduld… jouw voordeel wordt geladen!</p>
+                </div>
+                <div id="sovendus-container-1"></div>
+            </div>
+        </section>
 
-    // D. IVR Logica (Stap 5 of overslaan)
-    function checkIvrStatusAndProceed() {
-      const params = new URLSearchParams(window.location.search);
-      const status = params.get("status");
+    </main>
 
-      if (status === "online") {
-        console.log("ℹ️ Status is online -> Sla IVR over -> Naar Sovendus");
-        goToStep(6);
-      } else {
-        console.log("ℹ️ Status is live/anders -> Toon IVR");
-        goToStep(5);
-      }
-    }
-  </script>
+    <footer id="dynamic-footer"></footer>
+
+    <script>
+        // Identificatie voor multitenancy
+        window.CURRENT_DOMAIN = window.location.hostname;
+        // Slug bepaling
+        window.CAMPAIGN_SLUG = window.location.pathname.replace(/^\/|\/$/g, '') || "home";
+    </script>
+    
+    <script src="/visuals-loader.js"></script>
+    <script src="/coregRenderer.js"></script>
+    <script src="/formSubmit.js"></script>
+    <script src="/footer-loader.js"></script>
+    <script src="/cosponsors-loader.js"></script>
+    <script src="/initFlow-lite.js"></script>
 
 </body>
 </html>
