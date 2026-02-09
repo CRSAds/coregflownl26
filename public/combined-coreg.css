@@ -227,3 +227,34 @@ input:focus, select:focus {
   animation: spin 1s linear infinite;
 }
 @keyframes spin { to { transform: rotate(360deg); } }
+
+/* ============================================================
+   FLOW SECTIONS (De SwipePages vervanger)
+   ============================================================ */
+.flow-section {
+  display: none; /* Standaard alles verborgen */
+  animation: fadeIn 0.5s ease;
+}
+
+.flow-section.active {
+  display: block; /* Alleen de actieve sectie tonen */
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Specifiek voor de Lander (Stap 1) */
+.hero-content {
+  text-align: center;
+  padding: 40px 20px;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+/* Specifiek voor Short Form (Stap 2) */
+.form-header {
+  text-align: center;
+  margin-bottom: 20px;
+}
