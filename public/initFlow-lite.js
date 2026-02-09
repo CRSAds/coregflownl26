@@ -35,8 +35,12 @@
 
       const heroImg = document.getElementById("campaign-hero-image");
       if (heroImg && config.hero_image) {
-        heroImg.src = config.hero_image;
-        heroImg.style.display = 'block';
+          heroImg.src = config.hero_image;
+          heroImg.style.display = 'block'; // Forceer zichtbaarheid
+          heroImg.style.opacity = '1';     // Voor het geval er CSS transities zijn
+          console.log("🖼️ Hero image gezet naar:", config.hero_image);
+      } else {
+          console.warn("⚠️ Geen hero_image gevonden in config of element ontbreekt");
       }
 
       // Achtergrond instellen als deze aanwezig is
