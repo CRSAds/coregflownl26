@@ -1,58 +1,70 @@
+/**
+ * ✅ initFlow-lite.js — Met Visit Tracking & Click Logging
+ */
 (function () {
   let flowOrder = []; 
   let currentStepIndex = 0;
+  let sovendusVisible = false; // Voor click tracking
 
   async function initFlow() {
     const slug = window.CAMPAIGN_SLUG || "home";
-    console.log(`🚀 Flow Engine gestart voor slug: ${slug}`);
+    registerVisitOnce(); // 📊 Log bezoek direct bij start
 
     try {
       const res = await fetch(`/api/campaignVisuals.js?slug=${slug}`);
       const result = await res.json();
-
-      // Check of de API data heeft teruggegeven
-      if (!result || !result.data) {
-        throw new Error("Geen campagne data gevonden in API response");
-      }
+      if (!result?.data) throw new Error("Geen data");
       
       const config = result.data;
-
-      // Thema instellen op de body
       document.body.setAttribute("data-theme", config.theme || "light");
-
-      // Flow volgorde instellen uit Directus (met fallback)
-      flowOrder = (config.flow && config.flow.length > 0) 
-        ? config.flow 
-        : ["lander", "shortform", "coreg", "sovendus"];
+      flowOrder = config.flow.length > 0 ? config.flow : ["lander", "shortform", "coreg", "sovendus"];
 
       renderStep(0);
     } catch (err) {
-      console.error("❌ Kritieke fout bij laden flow:", err.message);
-      // Nood-fallback om de pagina niet leeg te laten
+      console.error("❌ Flow error:", err);
       flowOrder = ["lander", "shortform", "coreg", "sovendus"];
       renderStep(0);
     }
   }
 
+  // 📊 Visit tracking — 1x per sessie naar Supabase
+  function registerVisitOnce() {
+    if (sessionStorage.getItem("visitRegistered") === "true") return;
+    const payload = {
+      t_id: sessionStorage.getItem("t_id") || crypto.randomUUID(),
+      offer_id: sessionStorage.getItem("offer_id"),
+      page_url: window.location.href,
+      user_agent: navigator.userAgent
+    };
+    sessionStorage.setItem("visitRegistered", "true");
+    sessionStorage.setItem("t_id", payload.t_id);
+    fetch("/api/visit.js", { method: "POST", body: JSON.stringify(payload) }).catch(() => {});
+  }
+
+  // 🖱️ Sovendus Click Tracking (Approximate)
+  document.addEventListener("visibilitychange", () => {
+    if (document.visibilityState === "hidden" && sovendusVisible) {
+      const t_id = sessionStorage.getItem("t_id");
+      if (!t_id) return;
+      fetch("/api/sovendus-impression.js", {
+        method: "POST",
+        body: JSON.stringify({ t_id, event: "click", source: "flow" }),
+        keepalive: true
+      }).catch(() => {});
+    }
+  });
+
   function renderStep(index) {
-    if (index >= flowOrder.length) return;
-
     const stepName = flowOrder[index];
-    const targetId = `step-${stepName}`;
-
-    document.querySelectorAll(".flow-section").forEach(sec => sec.classList.remove("active"));
-
-    const targetSection = document.getElementById(targetId);
-    if (targetSection) {
-      targetSection.classList.add("active");
-      window.scrollTo({ top: 0, behavior: "smooth" });
-      
-      // Trigger scripts
-      if (stepName === "coreg" && typeof window.initCoregFlow === "function") window.initCoregFlow();
-      if (stepName === "sovendus" && typeof window.setupSovendus === "function") window.setupSovendus();
-    } else {
-      console.warn(`⚠️ Sectie ${targetId} mist in HTML. Naar volgende...`);
-      nextStep();
+    sovendusVisible = (stepName === "sovendus"); // Activeer tracking als stap actief is
+    
+    document.querySelectorAll(".flow-section").forEach(s => s.classList.remove("active"));
+    const target = document.getElementById(`step-${stepName}`);
+    if (target) {
+      target.classList.add("active");
+      window.scrollTo(0, 0);
+      if (stepName === "coreg") window.initCoregFlow?.();
+      if (stepName === "sovendus") window.setupSovendus?.();
     }
   }
 
@@ -64,12 +76,4 @@
   document.addEventListener("shortFormSubmitted", nextStep);
   document.addEventListener("coregFinished", nextStep);
   document.addEventListener("DOMContentLoaded", initFlow);
-
-  // Globale navigatie delegatie
-  document.addEventListener("click", (e) => {
-    if (e.target.closest("[data-next-step]")) {
-      e.preventDefault();
-      nextStep();
-    }
-  });
 })();
