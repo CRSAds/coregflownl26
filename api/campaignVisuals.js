@@ -6,51 +6,71 @@ export default async function handler(req, res) {
   // --- CORS ---
   res.setHeader("Access-Control-Allow-Origin", "*");
   res.setHeader("Access-Control-Allow-Methods", "GET, OPTIONS");
-  res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
-
+  
   if (req.method === "OPTIONS") return res.status(200).end();
 
-  // ✅ Edge caching (1 uur)
-  res.setHeader(
-    "Cache-Control",
-    "s-maxage=3600, stale-while-revalidate"
-  );
+  // 1. Probeer eerst ALLEEN de collectie info op te halen (zonder filters)
+  // Dit checkt of de collectie 'campaign_layouts' überhaupt bestaat en toegankelijk is.
+  const baseUrl = process.env.DIRECTUS_URL;
+  const token = process.env.DIRECTUS_TOKEN;
+  
+  console.log("🔍 Testing Directus Connection...");
+  console.log("👉 URL:", baseUrl);
+  // (We loggen het token niet voor veiligheid, maar checken lengte)
+  console.log("👉 Token length:", token ? token.length : "MISSING");
 
   try {
-    const url =
-      `${process.env.DIRECTUS_URL}/items/campaign_layouts` +
+    // TEST 1: Haal 1 item op ZONDER filters (werkt dit?)
+    const simpleUrl = `${baseUrl}/items/campaign_layouts?limit=1`;
+    console.log("👉 Attempting Simple Fetch:", simpleUrl);
+    
+    const simpleRes = await fetch(simpleUrl, {
+      headers: { Authorization: `Bearer ${token}` }
+    });
+    
+    if (!simpleRes.ok) {
+      const errText = await simpleRes.text();
+      console.error("❌ Simple Fetch Failed:", simpleRes.status, errText);
+      return res.status(500).json({ 
+        error: "Simple fetch failed", 
+        status: simpleRes.status, 
+        details: errText 
+      });
+    }
+
+    const simpleJson = await simpleRes.json();
+    console.log("✅ Simple Fetch Success! Data keys:", Object.keys(simpleJson.data[0] || {}));
+
+    // TEST 2: Als dat werkt, is het waarschijnlijk een veld-naam probleem.
+    // Laten we de originele URL proberen en de foutmelding vangen.
+    const fullUrl =
+      `${baseUrl}/items/campaign_layouts` +
       `?filter[is_live][_eq]=true` +
       `&filter[_or][0][country][_null]=true` +
       `&filter[_or][1][country][_eq]=NL` +
       `&fields=slug,title,paragraph,hero_image.id,horizontal_hero_image.id,background_image.id,ivr_image.id`;
 
-    const json = await fetchWithRetry(url, {
-      headers: { Authorization: `Bearer ${process.env.DIRECTUS_TOKEN}` },
+    console.log("👉 Attempting Full Fetch:", fullUrl);
+
+    const fullRes = await fetch(fullUrl, {
+      headers: { Authorization: `Bearer ${token}` }
     });
 
-    const visuals = (json.data || []).map((v) => ({
-      slug: v.slug || "",
-      title: v.title || "",
-      paragraph: v.paragraph || "",
-      hero_image: v.hero_image?.id
-        ? `https://cms.core.909play.com/assets/${v.hero_image.id}`
-        : null,
-      horizontal_hero_image: v.horizontal_hero_image?.id
-        ? `https://cms.core.909play.com/assets/${v.horizontal_hero_image.id}`
-        : null,
-      background_image: v.background_image?.id
-        ? `https://cms.core.909play.com/assets/${v.background_image.id}`
-        : null,
-      ivr_image: v.ivr_image?.id
-        ? `https://cms.core.909play.com/assets/${v.ivr_image.id}`
-        : null,
-    }));
+    if (!fullRes.ok) {
+      const errText = await fullRes.text();
+      console.error("❌ Full Fetch Failed (400 means field name error):", errText);
+      return res.status(500).json({ 
+        error: "Full fetch failed (probably wrong field name)", 
+        status: fullRes.status, 
+        details: errText 
+      });
+    }
 
-    console.log(`✅ ${visuals.length} visuals geladen`);
-    return res.status(200).json({ data: visuals });
+    const json = await fullRes.json();
+    return res.status(200).json(json);
 
   } catch (err) {
-    console.error("❌ Fout bij ophalen visuals:", err);
+    console.error("💥 CRASH:", err);
     return res.status(500).json({ error: err.message });
   }
 }
