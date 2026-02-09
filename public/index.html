@@ -15,7 +15,7 @@
         
         <section id="step-lander" class="flow-section">
             <div class="hero-wrapper">
-                <img id="campaign-hero-image" src="" alt="" style="display:none;">
+                <img id="campaign-hero-image" src="" alt="" style="display:none; width:100%; height:auto;">
             </div>
             <div class="container text-center">
                 <h1 id="campaign-title">Laden...</h1>
@@ -30,122 +30,50 @@
             <div class="container">
                 <form id="lead-form" class="modern-form-v2" data-sponsor-slideup="true">
                     <div class="gender-segment">
-                        <label>
-                            <input type="radio" name="gender" value="De Heer" required>
-                            <span>De heer</span>
-                        </label>
-                        <label>
-                            <input type="radio" name="gender" value="Mevrouw">
-                            <span>Mevrouw</span>
-                        </label>
+                        <label><input type="radio" name="gender" value="De Heer" required><span>De heer</span></label>
+                        <label><input type="radio" name="gender" value="Mevrouw"><span>Mevrouw</span></label>
                     </div>
-
                     <div class="field-group">
                         <label for="firstname">Voornaam</label>
                         <input id="firstname" type="text" placeholder="Voornaam" required>
                     </div>
-
                     <div class="field-group">
                         <label for="lastname">Achternaam</label>
                         <input id="lastname" type="text" placeholder="Achternaam" required>
                     </div>
-
                     <div class="field-group">
                         <label for="dob">Geboortedatum</label>
                         <input id="dob" type="text" placeholder="dd / mm / jjjj" required>
                     </div>
-
                     <div class="field-group">
                         <label for="email">E-mailadres</label>
                         <input id="email" type="email" placeholder="Vul je e-mailadres in" required>
                     </div>
-
                     <div class="consent-module">
                         <label class="consent-row required">
                             <input type="checkbox" required>
-                            <span>
-                                Ik ga akkoord met de
-                                <button type="button" id="open-actievoorwaarden-inline">actievoorwaarden</button>
-                            </span>
+                            <span>Ik ga akkoord met de <button type="button" id="open-actievoorwaarden-inline">actievoorwaarden</button></span>
                         </label>
                     </div>
-
                     <button type="submit" class="cta-primary">Ga verder</button>
                 </form>
             </div>
         </section>
 
-        <section id="step-coreg" class="flow-section">
-            <div class="container">
-                <div id="coreg-container"></div>
-            </div>
-        </section>
-
+        <section id="step-coreg" class="flow-section"><div id="coreg-container"></div></section>
         <section id="step-longform" class="flow-section">
-            <div class="container">
-                <form id="long-form" class="modern-form-v2">
-                    <div class="field-group">
-                        <label for="postcode">Postcode</label>
-                        <input type="text" id="postcode" placeholder="1234 AB" required>
-                    </div>
-
-                    <div class="field-group">
-                        <label for="huisnummer">Huisnummer + evt toevoeging</label>
-                        <input type="text" id="huisnummer" placeholder="10" required>
-                    </div>
-
-                    <div class="field-group">
-                        <label for="straat">Straat</label>
-                        <input type="text" id="straat" placeholder="Wordt automatisch ingevuld" readonly required>
-                    </div>
-
-                    <div class="field-group">
-                        <label for="woonplaats">Woonplaats</label>
-                        <input type="text" id="woonplaats" placeholder="Wordt automatisch ingevuld" readonly required>
-                    </div>
-
-                    <div class="field-group">
-                        <label for="telefoon">Telefoonnummer</label>
-                        <input id="telefoon" type="tel" placeholder="Telefoonnummer" required>
-                    </div>
-
-                    <button type="button" id="submit-long-form" class="cta-primary">
-                        Verstuur aanvullende gegevens
-                    </button>
-                </form>
-            </div>
-        </section>
-
-        <section id="step-ivr" class="flow-section">
-            <div class="container text-center">
-                <img id="campaign-ivr-image" src="" alt="Bel ons" style="max-width:300px;">
-                <div id="ivr-content">
-                    </div>
-            </div>
-        </section>
-
-        <section id="step-sovendus" class="flow-section">
-            <div class="container">
-                <div id="sovendus-loading">
-                    <p>Even geduld… jouw voordeel wordt geladen!</p>
-                </div>
-                <div id="sovendus-container-1"></div>
-            </div>
-        </section>
+            </section>
+        <section id="step-ivr" class="flow-section"><div id="ivr-content"></div></section>
+        <section id="step-sovendus" class="flow-section"><div id="sovendus-container-1"></div></section>
 
     </main>
 
     <footer id="dynamic-footer"></footer>
 
     <script>
-        // Identificatie voor multitenancy tracking
         window.CURRENT_DOMAIN = window.location.hostname;
-        
-        // Bepaal de campagne slug op basis van de URL
-        window.CAMPAIGN_SLUG = window.location.pathname.replace(/^\/|\/$/g, '') || "home";
-        
-        // API Base URL voor cross-domain requests
-        window.API_BASE = "https://globalcoregflow-nl.vercel.app";
+        const urlParams = new URLSearchParams(window.location.search);
+        window.CAMPAIGN_SLUG = urlParams.get('slug') || window.location.pathname.replace(/^\/|\/$/g, '') || "home";
     </script>
     
     <script src="/coregRenderer.js"></script>
@@ -153,6 +81,5 @@
     <script src="/footer-loader.js"></script>
     <script src="/cosponsors-loader.js"></script>
     <script src="/initFlow-lite.js"></script>
-
 </body>
 </html>
