@@ -1,14 +1,20 @@
 // ✅ Dynamische footer met Terms/Privacy popup + actievoorwaarden — volledig geïntegreerd
 
 (function () {
+  // Verbeterde status check
   const params = new URLSearchParams(window.location.search);
-  const status = params.get("status");
-  if (status !== "online" && status !== "live" && status !== "energie") {
-    console.warn("🚫 Ongeldige statusparameter — footer-loader.js wordt niet uitgevoerd.");
-    return;
+  const status = params.get("status")?.toLowerCase();
+  
+  // We staan 'live', 'online' en 'energie' toe
+  const validStatuses = ["online", "live", "energie"];
+  
+  if (!validStatuses.includes(status)) {
+    console.warn("🚫 Ongeldige statusparameter (" + status + ") — footer-loader.js stopt.");
+    // Optioneel: verwijder de return als je de footer ALTIJD wilt tonen
+    // return; 
   }
 
-  console.log("🦶 footer-loader.js gestart");
+  console.log("🦶 footer-loader.js gestart met status:", status);
 
   // === Helpers ===
   function lockScroll() {
