@@ -1,226 +1,118 @@
-// =============================================================
-// ✅ initFlow-lite.js — NL Version (Met Agressieve Scroll Fix)
-// =============================================================
+/**
+ * ✅ Dynamische Flow Engine (V4 - Headless Edition)
+ * Beheert multitenancy, dynamische volgorde en conditionele stappen.
+ */
 
-// Debug toggle (false = productie)
-const FLOW_DEBUG = false;
-const flowLog  = (...args) => { if (FLOW_DEBUG) console.log(...args); };
+(function () {
+  let flowOrder = []; // Wordt gevuld vanuit Directus
+  let currentStepIndex = 0;
 
-// =============================================================
-// 🛠️ HELPER: FORCE SCROLL TOP
-// Probeert alle mogelijke containers naar boven te scrollen
-// =============================================================
-function forceScrollTop() {
-  // 1. Directe window scroll (zonder smooth om conflicten te voorkomen)
-  window.scrollTo(0, 0);
+  async function initFlow() {
+    console.log("🚀 Flow Engine gestart voor domein:", window.CURRENT_DOMAIN);
 
-  // 2. Body en HTML (voor mobiele browsers / Safari)
-  document.body.scrollTop = 0;
-  document.documentElement.scrollTop = 0;
+    try {
+      // 1. Haal de flow-configuratie op uit Directus (conceptueel)
+      // In de praktijk vervang je dit door een API-call naar je Directus endpoint
+      const flowConfig = await fetchFlowConfig(window.CURRENT_DOMAIN, window.CAMPAIGN_SLUG);
+      flowOrder = flowConfig.steps; // bijv: ["lander", "shortform", "coreg", "sovendus"]
 
-  // 3. Swipe Pages Specifieke Wrappers
-  // Soms zit de scrollbar op een wrapper div
-  const wrappers = document.querySelectorAll('.swipe-page-wrapper, .section-container, .coreg-wrapper-fixed');
-  wrappers.forEach(el => {
-    el.scrollTop = 0;
-  });
+      // 2. Initialiseer de eerste stap
+      renderStep(0);
 
-  // 4. Fallback met timeout (voor als de browser traag rendert)
-  setTimeout(() => {
-    window.scrollTo(0, 0);
-    document.body.scrollTop = 0;
-  }, 50);
-}
-
-// =============================================================
-// 🟢 Sovendus hook — start pas zodra sectie actief wordt
-// =============================================================
-function maybeStartSovendus(section) {
-  if (!section) return;
-  if (section.id !== "sovendus-section") return;
-
-  if (typeof window.setupSovendus === "function") {
-    console.log("🟢 Sovendus-sectie actief → setupSovendus()");
-    window.setupSovendus();
-  } else {
-    console.warn("⚠️ window.setupSovendus bestaat niet (sovendus.js nog niet geladen?)");
-  }
-}
-
-window.addEventListener("DOMContentLoaded", initFlowLite);
-
-// =============================================================
-// 🚫 Toegangscontrole
-// =============================================================
-document.addEventListener("DOMContentLoaded", () => {
-  const params = new URLSearchParams(window.location.search);
-  const status = params.get("status");
-
-  // NL Logica: check ook op 'energie'
-  if (status !== "online" && status !== "live" && status !== "energie") {
-    document.querySelectorAll("section, footer, .sp-section, #dynamic-footer")
-      .forEach(el => el.style.display = "none");
-
-    document.body.innerHTML = `
-      <style>
-        html, body {
-          margin: 0; padding: 0; height: 100%; overflow: hidden;
-          background: #f8f8f8; display: flex; justify-content: center; align-items: center;
-          font-family: Inter, Helvetica, Arial; text-align: center; color: #333;
-        }
-        h1 { font-size: 24px; font-weight: 600; margin-bottom: 10px; }
-        p { font-size: 15px; line-height: 1.6; color: #555; }
-      </style>
-      <div>
-        <h1>Pagina niet bereikbaar</h1>
-        <p>Deze pagina is momenteel niet toegankelijk.<br>
-        Controleer of je de juiste link hebt of probeer het later opnieuw.</p>
-      </div>
-    `;
-  }
-});
-
-// =============================================================
-// 🚀 Hoofdinit — flow controller
-// =============================================================
-function initFlowLite() {
-
-  const params = new URLSearchParams(window.location.search);
-  const status = params.get("status") || "online";
-
-  // Alle secties ophalen
-  const allSections = Array.from(document.querySelectorAll(".flow-section, .ivr-section"));
-  allSections.forEach(el => el.style.display = "none");
-
-  // Coreg container blijft zichtbaar
-  const coregContainer = document.getElementById("coreg-container");
-  if (coregContainer) coregContainer.style.display = "block";
-
-  // Eerste zichtbare sectie tonen
-  const firstVisible = allSections.find(el => !el.classList.contains("ivr-section"));
-  if (firstVisible) {
-    firstVisible.style.display = "block";
-    reloadImages(firstVisible);
-    maybeStartSovendus(firstVisible);
+      // 3. Event listeners voor navigatie (Global Delegation)
+      document.addEventListener("click", handleNavigation);
+    } catch (err) {
+      console.error("❌ Flow initialisatie mislukt:", err);
+      // Fallback naar een standaard volgorde bij fouten
+      flowOrder = ["lander", "shortform", "coreg", "final"];
+      renderStep(0);
+    }
   }
 
-  // -----------------------------------------------------------
-  // 1. Navigation Buttons Click Handler
-  // -----------------------------------------------------------
-  const flowButtons = document.querySelectorAll(".flow-next");
-  flowButtons.forEach(btn => {
-    btn.addEventListener("click", () => {
-      if (btn.closest("#lead-form")) return; // shortform apart
+  /**
+   * Toont de juiste sectie op basis van de index in de flowOrder array
+   */
+  function renderStep(index) {
+    if (index >= flowOrder.length) return;
 
-      const current = btn.closest(".flow-section, .ivr-section");
-      if (!current) return;
-      
-      let next = current.nextElementSibling;
-      if (!next) return;
-      
-      current.style.display = "none";
+    const stepName = flowOrder[index];
+    const targetId = `step-${stepName}`;
 
-      // skip ivr if online
-      while (
-        next &&
-        next.classList.contains("ivr-section") &&
-        (status === "online" || status === "energie")
-      ) {
-        next = next.nextElementSibling;
-      }
-
-      // longform skip
-      if (next && next.id === "long-form-section") {
-        const needsLF = sessionStorage.getItem("requiresLongForm") === "true";
-        if (!needsLF) next = next.nextElementSibling;
-      }
-
-      if (next) {
-        next.style.display = "block";
-        reloadImages(next);
-        maybeStartSovendus(next);
-        
-        // ✅ AGGRESSIVE SCROLL
-        forceScrollTop();
-      }
+    // Verberg alle secties
+    document.querySelectorAll(".flow-section").forEach(sec => {
+      sec.classList.remove("active");
     });
-  });
 
-  // -----------------------------------------------------------
-  // 2. Event: Na shortform submit
-  // -----------------------------------------------------------
-  document.addEventListener("shortFormSubmitted", () => {
-    const form = document.getElementById("lead-form");
-    if (!form) return;
-    
-    const current = form.closest(".flow-section");
-    if (!current) return;
-    
-    let next = current.nextElementSibling;
-    if (!next) return;
+    // Toon de doel-sectie
+    const targetSection = document.getElementById(targetId);
+    if (targetSection) {
+      targetSection.classList.add("active");
+      window.scrollTo(0, 0);
+      console.log(`📍 Nu bij stap: ${stepName} (${index + 1}/${flowOrder.length})`);
+      
+      // Trigger specifieke loaders indien nodig (bijv. Sovendus of Coreg)
+      triggerStepLogic(stepName);
+    } else {
+      console.warn(`⚠️ Sectie ${targetId} niet gevonden in HTML.`);
+      nextStep(); // Sla over als de HTML mist
+    }
+  }
 
-    // ivr skip
-    while (
-      next &&
-      next.classList.contains("ivr-section") &&
-      (status === "online" || status === "energie")
-    ) {
-      next = next.nextElementSibling;
+  function nextStep() {
+    currentStepIndex++;
+    
+    // Check op conditionele oversprongen
+    const nextStepName = flowOrder[currentStepIndex];
+
+    // Overslaan van Longform als dit niet nodig is (sessionStorage check)
+    if (nextStepName === "longform") {
+      const needsLF = sessionStorage.getItem("requiresLongForm") === "true";
+      if (!needsLF) {
+        console.log("⏭️ Longform niet nodig, overslaan...");
+        return nextStep();
+      }
     }
 
-    // longform skip
-    if (next && next.id === "long-form-section") {
-      const showLong = sessionStorage.getItem("requiresLongForm") === "true";
-      if (!showLong) next = next.nextElementSibling;
+    // Overslaan van IVR als status online is
+    if (nextStepName === "ivr") {
+      const params = new URLSearchParams(window.location.search);
+      if (params.get("status") === "online") {
+        console.log("⏭️ Status is online, IVR overslaan...");
+        return nextStep();
+      }
     }
 
-    current.style.display = "none";
-    next.style.display = "block";
-    reloadImages(next);
-    maybeStartSovendus(next);
-    
-    // ✅ AGGRESSIVE SCROLL
-    forceScrollTop();
-  });
+    renderStep(currentStepIndex);
+  }
 
-  // -----------------------------------------------------------
-  // 3. Event: Na longform submit
-  // -----------------------------------------------------------
-  document.addEventListener("longFormSubmitted", () => {
-    const current = document.getElementById("long-form-section");
-    if (!current) return;
-    
-    let next = current.nextElementSibling;
-    if (!next) return;
-
-    while (
-      next &&
-      next.classList.contains("ivr-section") &&
-      (status === "online" || status === "energie")
-    ) {
-      next = next.nextElementSibling;
+  function handleNavigation(e) {
+    // Luister naar knoppen met [data-next-step] of specifieke form-submits
+    if (e.target.closest("[data-next-step]") || e.target.closest(".flow-next")) {
+      e.preventDefault();
+      nextStep();
     }
+  }
 
-    current.style.display = "none";
-    next.style.display = "block";
-    reloadImages(next);
-    maybeStartSovendus(next);
+  /**
+   * Activeert specifieke JS-logica per stap
+   */
+  function triggerStepLogic(stepName) {
+    if (stepName === "coreg" && window.initCoregFlow) window.initCoregFlow();
+    if (stepName === "sovendus" && window.setupSovendus) window.setupSovendus();
+  }
 
-    // ✅ AGGRESSIVE SCROLL
-    forceScrollTop();
-  });
-}
+  // Luister naar custom events van formulieren (vanuit formSubmit.js)
+  document.addEventListener("shortFormSubmitted", nextStep);
+  document.addEventListener("longFormSubmitted", nextStep);
 
-// =============================================================
-// Helpers
-// =============================================================
-function reloadImages(section) {
-  if (!section) return;
-  const imgs = section.querySelectorAll("img[data-src]");
-  imgs.forEach(img => img.src = img.dataset.src);
+  // Start de engine
+  document.addEventListener("DOMContentLoaded", initFlow);
 
-  window.scrollBy(0, 1);
-  setTimeout(() => window.scrollBy(0, -1), 150);
-}
+  // Mock functie voor Directus call
+  async function fetchFlowConfig(domain, slug) {
+    // Hier zou je fetch(`${API_BASE}/api/flow-config?domain=${domain}&slug=${slug}`) doen.
+    // Voor nu retourneren we de standaard volgorde:
+    return { steps: ["lander", "shortform", "coreg", "longform", "ivr", "sovendus"] };
+  }
 
-console.info("🎉 initFlow-lite (NL) loaded");
+})();
