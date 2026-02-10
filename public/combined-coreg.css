@@ -2,6 +2,7 @@
    ✅ combined-coreg.css — VOLLEDIGE PRODUCTIE VERSIE
    ============================================================ */
 
+/* 1. Fonts & Basis */
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Montserrat:wght@800&display=swap');
 
 :root {
@@ -16,32 +17,33 @@
   --font-body: 'Inter', sans-serif;
 }
 
-/* --- Layout: Footer onder de vouw --- */
-html {
-  height: 100%;
-}
-
-body {
+html, body {
   margin: 0;
   padding: 0;
   min-height: 100vh;
   background-color: #f8fafc;
   font-family: var(--font-body);
   color: var(--ld-text-dark);
-  /* Grid dwingt footer naar beneden */
-  display: grid;
-  grid-template-rows: 1fr auto;
+  /* Forceer verticale flow */
+  display: flex;
+  flex-direction: column;
 }
 
+/* 2. Layout Container: Full Screen Focus */
 .main-flow-container {
   width: 100%;
   max-width: 480px;
   margin: 0 auto;
   padding: 40px 15px;
   box-sizing: border-box;
+  /* Zorgt dat de container minstens het hele scherm vult */
+  flex: 1 0 auto;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
 }
 
-/* --- De Kaart --- */
+/* 3. De Kaart */
 .flow-section {
   display: none;
   background: #ffffff !important;
@@ -68,7 +70,7 @@ body {
   padding: 25px 30px 35px;
 }
 
-/* --- Progressie Balk (Binnen de kaart) --- */
+/* 4. Progressie & Stepper */
 .progress-wrapper {
   background: #f8fafc;
   padding: 20px 30px 15px;
@@ -137,20 +139,23 @@ body {
 
 .step-dot.completed { background: var(--ld-primary); color: white; }
 .step-dot.active { border-color: var(--ld-primary); background: #fff; color: var(--ld-primary); transform: scale(1.1); }
-.step-dot:last-child.completed { background: #FFD700; border-color: #FFD700; }
 
-/* --- Knoppen & Velden --- */
-.field-group { margin-bottom: 16px; text-align: left; }
-label { font-size: 14px; font-weight: 600; margin-bottom: 6px; display: block; }
+/* 5. Typografie & Knoppen */
+h1, h2, h3, .coreg-title {
+  font-family: var(--font-header) !important;
+  font-size: 24px;
+  line-height: 1.2;
+  margin-top: 0;
+  margin-bottom: 15px;
+  color: var(--ld-text-dark);
+}
 
-input[type="text"], input[type="email"], input[type="tel"] {
-  width: 100%;
-  padding: 14px;
-  border: 1.5px solid #cbd5e1;
-  border-radius: var(--radius-input);
-  font-family: var(--font-body);
+p, #campaign-paragraph, .coreg-description {
+  font-family: var(--font-body) !important;
   font-size: 16px;
-  box-sizing: border-box;
+  line-height: 1.6;
+  color: var(--ld-text-gray);
+  margin-bottom: 20px;
 }
 
 .cta-primary, .btn-answer {
@@ -167,12 +172,9 @@ input[type="text"], input[type="email"], input[type="tel"] {
   cursor: pointer;
   box-sizing: border-box;
   text-align: center;
-  transition: transform 0.1s;
 }
 
-.cta-primary:active { transform: scale(0.98); }
-
-/* Coreg Spacing (8px) */
+/* Spacing fix voor Coreg */
 .coreg-answers {
   display: flex;
   flex-direction: column;
@@ -190,27 +192,28 @@ input[type="text"], input[type="email"], input[type="tel"] {
   margin-top: 8px;
   font-weight: 600;
   cursor: pointer;
+  font-family: var(--font-body);
 }
 
-/* Custom Dropdown Look */
-.coreg-dropdown {
+/* 6. Formulier velden */
+.field-group { margin-bottom: 16px; text-align: left; }
+label { font-size: 14px; font-weight: 600; margin-bottom: 6px; display: block; }
+
+input[type="text"], input[type="email"], input[type="tel"] {
   width: 100%;
   padding: 14px;
-  border: 1.5px solid var(--ld-gray-border);
+  border: 1.5px solid #cbd5e1;
   border-radius: var(--radius-input);
+  font-family: var(--font-body);
   font-size: 16px;
-  appearance: none;
-  background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
-  background-repeat: no-repeat;
-  background-position: right 1rem center;
-  background-size: 1em;
-  background-color: #fff;
+  box-sizing: border-box;
 }
 
-/* --- Tekstlinkjes Styling (Fix voor Shortform) --- */
-.flow-section #open-actievoorwaarden-inline,
-.flow-section .slideup-partner-link,
-.flow-section #trigger-partner-popup {
+/* 7. Clickable Tekst (Links) - Fix voor punt 3 */
+#open-actievoorwaarden-inline,
+.slideup-partner-link,
+#trigger-partner-popup,
+.slideup-deny {
     all: unset !important;
     background: none !important;
     border: none !important;
@@ -221,9 +224,16 @@ input[type="text"], input[type="email"], input[type="tel"] {
     font-weight: 400 !important;
     font-family: var(--font-body) !important;
     display: inline !important;
+    font-size: inherit !important;
 }
 
-/* --- Slide-up --- */
+.slideup-deny {
+    margin-top: 15px !important;
+    display: block !important;
+    text-align: center !important;
+}
+
+/* 8. Slide-up */
 .sponsor-slideup {
   position: absolute;
   bottom: 0;
@@ -243,9 +253,10 @@ input[type="text"], input[type="email"], input[type="tel"] {
 
 .sponsor-slideup.is-visible { transform: translateY(0); }
 
-/* --- Footer --- */
+/* 9. Footer - Altijd onderaan */
 #dynamic-footer {
-  padding: 60px 20px;
+  flex-shrink: 0;
+  padding: 40px 20px;
   background: #fff;
   border-top: 1px solid #e2e8f0;
   text-align: center;
@@ -253,7 +264,6 @@ input[type="text"], input[type="email"], input[type="tel"] {
   color: #94a3b8;
 }
 
-/* --- Afbeeldingen --- */
 .coreg-image, #campaign-hero-image {
   width: 100%;
   aspect-ratio: 700 / 200;
