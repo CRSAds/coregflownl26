@@ -1,6 +1,3 @@
-/**
- * ✅ initFlow-lite.js — Volledige Flow Engine
- */
 (function () {
   let flowOrder = [];
   let currentStepIndex = 0;
@@ -24,8 +21,8 @@
       const config = result.data;
 
       if (config) {
-        if (document.getElementById("campaign-title")) document.getElementById("campaign-title").innerHTML = config.title;
-        if (document.getElementById("campaign-paragraph")) document.getElementById("campaign-paragraph").innerHTML = config.paragraph;
+        document.getElementById("campaign-title").innerHTML = config.title;
+        document.getElementById("campaign-paragraph").innerHTML = config.paragraph;
         
         const hero = document.getElementById("campaign-hero-image");
         if (hero && config.hero_image) {
@@ -35,7 +32,6 @@
 
         flowOrder = (config.flow && config.flow.length > 0) ? config.flow : ["lander", "shortform", "coreg", "sovendus"];
 
-        // Teken bolletjes in alle secties
         document.querySelectorAll(".progress-steps").forEach(container => {
             container.innerHTML = "";
             flowOrder.forEach((step, index) => {
@@ -64,7 +60,6 @@
     if (target) {
       target.classList.add("active");
       
-      // Update elementen in de kaart
       const activeBar = target.querySelector(".progress-bar");
       const activeText = target.querySelector(".progress-text");
       const dots = target.querySelectorAll(".step-dot");
