@@ -1,6 +1,3 @@
-/**
- * ✅ initFlow-lite.js — Volledige Flow Engine met Integratie per Sectie
- */
 (function () {
   let flowOrder = [];
   let currentStepIndex = 0;
@@ -10,7 +7,7 @@
     shortform: "Jouw gegevens",
     coreg: "Speciaal voor jou",
     longform: "Adrescontrole",
-    ivr: "Laatste stap",
+    ivr: "Verificatie",
     sovendus: "Klaar! 🎁"
   };
 
@@ -23,22 +20,15 @@
       const result = await res.json();
       const config = result.data;
 
-      // Lander visuals vullen
-      const titleEl = document.getElementById("campaign-title");
-      const paraEl = document.getElementById("campaign-paragraph");
-      if (titleEl) titleEl.innerHTML = config.title;
-      if (paraEl) paraEl.innerHTML = config.paragraph;
-      
-      const heroImg = document.getElementById("campaign-hero-image");
-      if (heroImg && config.hero_image) {
-        heroImg.src = config.hero_image;
-        heroImg.style.display = 'block';
-      }
+      // Lander invullen
+      document.getElementById("campaign-title").innerHTML = config.title;
+      document.getElementById("campaign-paragraph").innerHTML = config.paragraph;
+      const hero = document.getElementById("campaign-hero-image");
+      if (hero && config.hero_image) { hero.src = config.hero_image; hero.style.display = 'block'; }
 
-      // Flow instellen
       flowOrder = (config.flow && config.flow.length > 0) ? config.flow : ["lander", "shortform", "coreg", "sovendus"];
 
-      // Genereer bolletjes in alle secties
+      // Genereer bolletjes in ELKE sectie voor continuïteit
       document.querySelectorAll(".progress-steps").forEach(container => {
         container.innerHTML = "";
         flowOrder.forEach((step, index) => {
@@ -51,7 +41,7 @@
       
       renderStep(0);
     } catch (err) {
-      console.error("❌ Flow error:", err);
+      console.error("Flow Error:", err);
       renderStep(0);
     }
   }
@@ -60,14 +50,13 @@
     currentStepIndex = index;
     const stepName = flowOrder[index];
     
-    // Secties wisselen
     document.querySelectorAll(".flow-section").forEach(s => s.classList.remove("active"));
     const target = document.getElementById(`step-${stepName}`);
     
     if (target) {
       target.classList.add("active");
       
-      // Update balk in deze sectie
+      // Update balk & tekst IN de actieve kaart
       const activeBar = target.querySelector(".progress-bar");
       const activeText = target.querySelector(".progress-text");
       const dots = target.querySelectorAll(".step-dot");
@@ -76,9 +65,8 @@
         const percentage = ((index + 1) / flowOrder.length) * 100;
         activeBar.style.width = `${percentage}%`;
       }
-      
       if (activeText) activeText.innerText = progressMessages[stepName] || "";
-
+      
       dots.forEach((dot, i) => {
         dot.classList.toggle("completed", i < index);
         dot.classList.toggle("active", i === index);
@@ -86,7 +74,6 @@
 
       window.scrollTo(0, 0);
       if (stepName === "coreg") window.initCoregFlow?.();
-      if (stepName === "sovendus") window.setupSovendus?.();
     }
   }
 
@@ -96,10 +83,7 @@
   }
 
   document.addEventListener("click", (e) => {
-    if (e.target.closest("[data-next-step]")) {
-      e.preventDefault();
-      nextStep();
-    }
+    if (e.target.closest("[data-next-step]")) { e.preventDefault(); nextStep(); }
   });
 
   document.addEventListener("shortFormSubmitted", nextStep);
