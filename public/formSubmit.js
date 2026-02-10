@@ -33,7 +33,6 @@
 
       const slideup = document.getElementById("sponsor-slideup");
       if (slideup) {
-        // Maak de slide-up zichtbaar
         slideup.classList.add("is-visible");
         
         document.getElementById("slideup-confirm").onclick = () => finalize();
@@ -44,7 +43,6 @@
     });
 
     async function finalize() {
-      // Data opslaan
       sessionStorage.setItem("firstname", document.getElementById("firstname").value);
       sessionStorage.setItem("lastname", document.getElementById("lastname").value);
       sessionStorage.setItem("dob", document.getElementById("dob").value);
