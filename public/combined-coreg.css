@@ -1,55 +1,56 @@
 /* ============================================================
-   ✅ combined-coreg.css — Definitieve Versie (Inclusief Stepper)
+   ✅ combined-coreg.css — Volledige High-End UI Versie
    ============================================================ */
+
+/* 1. Fonts & Basis */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Montserrat:wght@800&display=swap');
 
 :root {
   --ld-primary: #14B670;
   --ld-primary-hover: #11985a;
-  --ld-text-dark: #111111;
-  --ld-gray-border: #d5e0df;
-  --radius-card: 24px;
-  --radius-input: 8px;
-  --font-main: 'Plus Jakarta Sans', Inter, system-ui, sans-serif;
+  --ld-text-dark: #0f172a;
+  --ld-text-gray: #475569;
+  --ld-gray-border: #e2e8f0;
+  --radius-card: 12px;
+  --radius-input: 6px;
+  --font-header: 'Montserrat', sans-serif;
+  --font-body: 'Inter', sans-serif;
 }
 
-/* --- Basis Layout & Footer fix --- */
 html, body {
-  height: 100%;
   margin: 0;
-}
-
-body {
-  font-family: var(--font-main);
-  background-color: #f4f4f4;
-  color: var(--ld-text-dark);
-  display: flex;
-  flex-direction: column;
+  padding: 0;
+  height: auto;
   min-height: 100vh;
+  background-color: #f8fafc;
+  font-family: var(--font-body);
+  color: var(--ld-text-dark);
+  display: block; /* Zorgt dat de footer onder de vouw komt bij scrollen */
 }
 
+/* 2. Layout Container */
 .main-flow-container {
-  flex: 1 0 auto;
   width: 100%;
-  max-width: 500px;
-  margin: 0 auto;
-  padding: 20px 15px;
+  max-width: 480px;
+  margin: 40px auto;
+  padding: 0 15px;
   box-sizing: border-box;
 }
 
-/* --- De Kaart (Leesbaarheid & Glassmorphism) --- */
+/* 3. De Kaart (Glassmorphism & Strakke schaduw) */
 .flow-section {
   display: none;
-  background: rgba(255, 255, 255, 0.94) !important;
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border: 1px solid rgba(255, 255, 255, 0.6);
+  background: #ffffff !important;
+  border: 1px solid rgba(0, 0, 0, 0.05);
   border-radius: var(--radius-card);
-  padding: 30px !important;
-  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.1);
-  margin-bottom: 20px;
+  /* Strakkere, gelaagde schaduw */
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 
+              0 2px 4px -1px rgba(0, 0, 0, 0.06), 
+              0 20px 25px -5px rgba(0, 0, 0, 0.05);
+  padding: 0 !important; /* Ruimte wordt geregeld door wrapper en content */
   position: relative;
   overflow: hidden;
-  animation: fadeIn 0.4s ease-out;
+  animation: fadeIn 0.3s ease-out;
 }
 
 .flow-section.active {
@@ -61,33 +62,27 @@ body {
   to { opacity: 1; transform: translateY(0); }
 }
 
-/* --- Footer (Altijd onderaan) --- */
-#dynamic-footer {
-  flex-shrink: 0;
-  width: 100%;
-  background: #ffffff;
-  padding: 25px 15px;
-  box-sizing: border-box;
-  text-align: center;
-  font-size: 12px;
-  color: #666;
-  border-top: 1px solid #eee;
+/* Content wrapper binnen de kaart */
+.section-content {
+  padding: 25px 30px 35px;
 }
 
-/* --- Progress & Stepper Styling (NIEUW) --- */
+/* 4. Progressie & Stepper (Geïntegreerd in kaart) */
 .progress-wrapper {
-  margin-bottom: 30px;
-  padding: 0 10px;
+  background: #f8fafc;
+  padding: 20px 30px 15px;
+  border-bottom: 1px solid #f1f5f9;
 }
 
 .progress-text {
-  font-size: 14px;
-  font-weight: 700;
+  font-family: var(--font-header);
+  font-size: 13px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
   color: var(--ld-primary);
   margin-bottom: 12px;
+  font-weight: 800;
   text-align: center;
-  transition: all 0.3s ease;
-  min-height: 1.4em;
 }
 
 .ld-progress-container {
@@ -101,7 +96,7 @@ body {
   width: 100%;
   height: 6px;
   background-color: #e2e8f0;
-  border-radius: 3px;
+  border-radius: 100px;
   position: absolute;
   top: 50%;
   transform: translateY(-50%);
@@ -112,7 +107,7 @@ body {
   height: 100%;
   width: 0%;
   background-color: var(--ld-primary);
-  transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: width 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
 .progress-steps {
@@ -127,18 +122,18 @@ body {
 }
 
 .step-dot {
-  width: 20px;
-  height: 20px;
+  width: 18px;
+  height: 18px;
   background: #e2e8f0;
   border: 2px solid #fff;
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 10px;
+  font-size: 9px;
   color: transparent;
   transition: all 0.4s ease;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
 }
 
 .step-dot.completed {
@@ -148,22 +143,134 @@ body {
 
 .step-dot.active {
   border-color: var(--ld-primary);
-  transform: scale(1.2);
+  transform: scale(1.1);
   background: #fff;
   color: var(--ld-primary);
 }
 
 .step-dot:last-child {
-  font-size: 14px;
+  font-size: 12px;
   background: #fff;
 }
 
 .step-dot:last-child.completed {
-  background: #FFD700; /* Goud voor de finish */
+  background: #FFD700;
   border-color: #FFD700;
 }
 
-/* --- Clickable Tekst --- */
+/* 5. Typografie */
+h1, h2, h3, .coreg-title {
+  font-family: var(--font-header);
+  font-size: 24px;
+  line-height: 1.2;
+  margin-top: 0;
+  margin-bottom: 15px;
+  color: var(--ld-text-dark);
+}
+
+p, #campaign-paragraph, .coreg-description {
+  font-size: 16px;
+  line-height: 1.6;
+  color: var(--ld-text-gray);
+  margin-bottom: 20px;
+}
+
+/* 6. Formulier & Inputs */
+.field-group {
+  margin-bottom: 16px;
+  display: flex;
+  flex-direction: column;
+  text-align: left;
+}
+
+label {
+  font-size: 14px;
+  font-weight: 600;
+  margin-bottom: 6px;
+  color: var(--ld-text-dark);
+}
+
+input[type="text"], 
+input[type="email"], 
+input[type="tel"] {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 14px;
+  border: 1.5px solid #cbd5e1;
+  border-radius: var(--radius-input);
+  font-family: var(--font-body);
+  font-size: 16px; /* Voorkomt zoom op iOS */
+  transition: border-color 0.2s;
+}
+
+input:focus {
+  border-color: var(--ld-primary);
+  outline: none;
+}
+
+/* Gender / Radio Segment */
+.gender-segment {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.gender-segment label {
+  flex: 1;
+  position: relative;
+  cursor: pointer;
+}
+
+.gender-segment input[type="radio"] {
+  position: absolute;
+  opacity: 0;
+}
+
+.gender-segment span {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 48px;
+  background: #fff;
+  border: 1.5px solid #cbd5e1;
+  border-radius: var(--radius-input);
+  font-weight: 600;
+  transition: all 0.2s;
+}
+
+.gender-segment input:checked + span {
+  background: #f1f5f9;
+  border-color: var(--ld-text-dark);
+}
+
+.gender-segment input:checked + span::before {
+  content: "✓";
+  margin-right: 8px;
+}
+
+/* 7. Buttons */
+.cta-primary {
+  width: 100%;
+  padding: 18px;
+  background: var(--ld-primary) !important;
+  color: #fff !important;
+  border: none;
+  border-radius: var(--radius-input);
+  font-family: var(--font-header);
+  font-size: 16px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+  cursor: pointer;
+  transition: transform 0.1s, background 0.2s;
+  box-shadow: 0 4px 6px -1px rgba(20, 182, 112, 0.2);
+}
+
+.cta-primary:active {
+  transform: scale(0.98);
+}
+
+/* 8. Clickable Tekst & Links */
 #open-actievoorwaarden-inline,
 .slideup-partner-link,
 #trigger-partner-popup {
@@ -175,11 +282,10 @@ body {
     font-weight: 400 !important;
     cursor: pointer !important;
     font-size: inherit !important;
-    font-family: inherit !important;
     display: inline !important;
 }
 
-/* --- Slide-up Animatie --- */
+/* 9. Slide-up Animatie */
 .sponsor-slideup {
     position: absolute;
     bottom: 0;
@@ -197,93 +303,35 @@ body {
     text-align: center;
     transform: translateY(100%);
     transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
-    box-shadow: 0 -10px 25px rgba(0,0,0,0.05);
 }
 
 .sponsor-slideup.is-visible {
     transform: translateY(0);
 }
 
-.slideup-title { margin: 0 0 10px; font-size: 20px; font-weight: 800; }
-.slideup-text { font-size: 15px; margin-bottom: 20px; line-height: 1.4; }
-
-/* --- Formulier Styling --- */
-.field-group {
-  margin-bottom: 16px;
-  display: flex;
-  flex-direction: column;
-  text-align: left;
-}
-
-label { font-size: 14px; font-weight: 700; margin-bottom: 6px; }
-
-input[type="text"], input[type="email"], input[type="tel"] {
-  width: 100%;
-  box-sizing: border-box;
-  padding: 14px;
-  border: 1.5px solid var(--ld-gray-border);
-  border-radius: var(--radius-input);
-  font-size: 16px;
-}
-
-.gender-segment { display: flex; gap: 12px; margin-bottom: 20px; }
-.gender-segment label { flex: 1; position: relative; cursor: pointer; }
-.gender-segment input[type="radio"] { position: absolute; opacity: 0; }
-.gender-segment span {
-  display: flex; align-items: center; justify-content: center;
-  min-height: 48px; background: #fff; border: 1.5px solid var(--ld-gray-border);
-  border-radius: 12px; font-weight: 700;
-}
-.gender-segment input:checked + span { background: #f1f5f9; border-color: #111; }
-.gender-segment input:checked + span::before { content: "✓"; margin-right: 8px; }
-
-.cta-primary {
-  width: 100%;
-  padding: 16px;
-  background: var(--ld-primary) !important;
-  color: #fff !important;
-  border: none;
-  border-radius: 12px;
-  font-size: 18px;
-  font-weight: 800;
-  cursor: pointer;
-}
-
 .slideup-deny {
-  background: none; border: none; color: #666; 
-  text-decoration: underline; margin-top: 15px; cursor: pointer;
+  background: none;
+  border: none;
+  color: var(--ld-text-gray);
+  text-decoration: underline;
+  margin-top: 15px;
+  cursor: pointer;
+  font-size: 14px;
 }
 
-#campaign-hero-image {
-  width: 100%;
-  border-radius: 12px;
-  margin-bottom: 20px;
-}
-
-/* --- Coreg Styling --- */
-.coreg-section { text-align: center; }
+/* 10. Coreg Specifiek */
 .coreg-image {
   width: 100%;
   aspect-ratio: 700 / 200;
   object-fit: cover;
-  border-radius: 12px;
+  border-radius: var(--radius-input);
   margin-bottom: 20px;
 }
-.coreg-title { font-size: 19px; font-weight: 800; margin-bottom: 10px; color: var(--ld-text-dark); }
-.coreg-description { font-size: 14px; line-height: 1.4; margin-bottom: 20px; color: #444; }
-.coreg-answers { display: flex; flex-direction: column; gap: 8px; }
 
-.btn-answer {
-  width: 100%;
-  padding: 14px;
-  background: var(--ld-primary) !important;
-  color: white !important;
-  border: none !important;
-  border-radius: 10px !important;
-  font-weight: 700;
-  font-size: 16px;
-  cursor: pointer;
-  box-sizing: border-box;
+.coreg-answers {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
 }
 
 .btn-skip {
@@ -295,23 +343,37 @@ input[type="text"], input[type="email"], input[type="tel"] {
   padding: 14px;
   background-color: #f1f5f9 !important;
   color: #64748b !important;
-  border-radius: 10px;
+  border-radius: var(--radius-input);
   font-size: 15px;
   font-weight: 600;
   text-align: center;
   cursor: pointer;
-  transition: background 0.2s;
 }
-
-.btn-skip:hover { background-color: #e2e8f0 !important; color: #1e293b !important; }
 
 .coreg-dropdown {
   width: 100%;
   padding: 14px;
-  border: 1.5px solid var(--ld-gray-border);
-  border-radius: 10px;
+  border: 1.5px solid #cbd5e1;
+  border-radius: var(--radius-input);
   font-size: 16px;
   background-color: white;
   margin-bottom: 8px;
-  box-sizing: border-box;
+}
+
+/* 11. Footer (Onder de fold) */
+#dynamic-footer {
+  margin-top: 60px;
+  padding: 40px 20px;
+  background: #ffffff;
+  border-top: 1px solid #e2e8f0;
+  text-align: center;
+  font-size: 13px;
+  color: #94a3b8;
+  line-height: 1.6;
+}
+
+#campaign-hero-image {
+  width: 100%;
+  border-radius: var(--radius-input);
+  margin-bottom: 20px;
 }
