@@ -1,8 +1,6 @@
-// =============================================================
-// ✅ coregRenderer.js — Herstelde Versie
-// =============================================================
-
-// Helper-functie om de coreg-campagnes op te halen bij de API
+/**
+ * ✅ coregRenderer.js — Hersteld voor Dynamische Opties & Flow
+ */
 async function fetchCampaigns() {
   try {
     const res = await fetch("/api/coreg.js", { cache: "no-store" });
@@ -16,13 +14,11 @@ async function fetchCampaigns() {
 }
 
 async function initCoregFlow() {
-  console.log("🎯 Coreg Renderer gestart");
   const container = document.getElementById("coreg-container");
   if (!container) return;
 
   const campaigns = await fetchCampaigns();
   if (!campaigns.length) {
-    console.warn("⚠️ Geen coreg campagnes gevonden.");
     document.dispatchEvent(new Event("coregFinished"));
     return;
   }
@@ -34,17 +30,13 @@ async function initCoregFlow() {
     sectionsContainer.innerHTML += renderCampaignBlock(camp, idx === 0);
   });
 
-  // Event delegation voor interactie
   container.onclick = async (e) => {
-    const btn = e.target.closest(".btn-answer, .btn-skip");
-    if (!btn) return;
+    const btn = e.target.closest(".btn-answer, .btn-skip, .coreg-dropdown");
+    if (!btn || e.target.tagName === 'SELECT') return;
 
     const section = btn.closest(".coreg-section");
-    
-    // Logica voor antwoord opslaan (voorbeeld)
-    console.log(`✅ Antwoord voor ${btn.dataset.campaign}: ${btn.dataset.answer}`);
-
     const nextSection = section.nextElementSibling;
+
     if (nextSection) {
       section.style.display = "none";
       nextSection.style.display = "block";
@@ -61,15 +53,37 @@ function renderCampaignBlock(campaign, isFirst) {
     ? `https://cms.core.909play.com/assets/${campaign.image.id}` 
     : "https://via.placeholder.com/600x300";
 
+  // Check voor dropdown stijl of buttons
+  const isDropdown = campaign.ui_style === "dropdown";
+  const answers = campaign.coreg_answers || [];
+
+  let interactiveHtml = "";
+
+  if (isDropdown) {
+    interactiveHtml = `
+      <select class="coreg-dropdown" data-campaign="${campaign.id}">
+        <option value="">Maak een keuze...</option>
+        ${answers.map(a => `<option value="${a.answer_value}">${a.label}</option>`).join("")}
+      </select>
+      <button class="cta-primary btn-answer mt-10" data-answer="dropdown-val">Verstuur</button>
+    `;
+  } else {
+    interactiveHtml = `
+      <div class="coreg-answers">
+        ${answers.map(a => `
+          <button class="cta-primary btn-answer" data-answer="${a.answer_value}">${a.label}</button>
+        `).join("")}
+        <button class="btn-skip" data-answer="no">Nee, bedankt</button>
+      </div>
+    `;
+  }
+
   return `
     <div class="coreg-section" data-cid="${campaign.cid}" style="display: ${isFirst ? 'block' : 'none'}">
       <img src="${imageUrl}" class="coreg-image" alt="${campaign.title}">
       <h3>${campaign.title}</h3>
       <p>${campaign.description || ""}</p>
-      <div class="coreg-answers">
-        <button class="cta-primary btn-answer" data-answer="yes" data-campaign="${campaign.id}">Ja</button>
-        <button class="btn-skip" data-answer="no" data-campaign="${campaign.id}">Nee</button>
-      </div>
+      ${interactiveHtml}
     </div>`;
 }
 
