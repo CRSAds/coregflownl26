@@ -1,21 +1,20 @@
 /* ============================================================
-   ✅ combined-coreg.css — Volledige Structurele Versie
+   ✅ combined-coreg.css — High-End UI
    ============================================================ */
-
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Montserrat:wght@800&display=swap');
 
 :root {
   --ld-primary: #14B670;
   --ld-text-dark: #0f172a;
-  --ld-text-gray: #475569;
-  --ld-gray-border: #e2e8f0;
+  --ld-text-gray: #64748b;
+  --ld-border: #e2e8f0;
   --radius-card: 12px;
-  --radius-input: 6px;
+  --radius-input: 8px; /* Iets zachter dan 6px */
   --font-header: 'Montserrat', sans-serif;
   --font-body: 'Inter', sans-serif;
+  --shadow-card: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 10px 15px -3px rgba(0, 0, 0, 0.05);
 }
 
-/* --- Layout: Footer onder de vouw --- */
+/* --- Layout: Full Height & Footer Push --- */
 html, body {
   margin: 0;
   padding: 0;
@@ -33,49 +32,63 @@ html, body {
   margin: 0 auto;
   padding: 20px 15px 40px;
   box-sizing: border-box;
-  flex: 1 0 auto;
+  /* Cruciaal: deze flex-grow duwt de footer naar beneden */
+  flex: 1 0 auto; 
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
 }
 
-/* --- De Kaart --- */
+/* --- Card Design (High-End) --- */
 .flow-section {
   display: none;
   background: #ffffff !important;
-  border: 1px solid rgba(0, 0, 0, 0.05);
+  border: 1px solid var(--ld-border);
   border-radius: var(--radius-card);
-  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
+  box-shadow: var(--shadow-card);
   padding: 0 !important;
   position: relative;
   overflow: hidden;
   margin-bottom: 20px;
+  animation: fadeIn 0.4s ease-out;
 }
 
 .flow-section.active { display: block; }
 
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
 .section-content { padding: 25px 30px 35px; }
 
-/* --- Progressie Balk (Binnen de kaart) --- */
+/* --- Typografie --- */
+h1, h2, h3 { font-family: var(--font-header); font-weight: 800; margin: 0 0 16px; color: var(--ld-text-dark); }
+p { font-size: 15px; line-height: 1.6; color: var(--ld-text-gray); margin-bottom: 20px; }
+.text-center { text-align: center; }
+.mt-20 { margin-top: 20px; }
+
+/* --- Progress Bar (Integrated in Card) --- */
 .progress-wrapper {
   background: #f8fafc;
   padding: 20px 30px 15px;
-  border-bottom: 1px solid #f1f5f9;
+  border-bottom: 1px solid var(--ld-border);
 }
 
 .progress-text {
   font-family: var(--font-header);
-  font-size: 13px;
+  font-size: 12px;
   text-transform: uppercase;
   color: var(--ld-primary);
-  margin-bottom: 12px;
+  margin-bottom: 10px;
   font-weight: 800;
   text-align: center;
+  letter-spacing: 0.5px;
 }
 
 .ld-progress-container {
   position: relative;
-  height: 24px;
+  height: 20px;
   display: flex;
   align-items: center;
 }
@@ -88,6 +101,7 @@ html, body {
   position: absolute;
   top: 50%;
   transform: translateY(-50%);
+  overflow: hidden;
 }
 
 .progress-bar {
@@ -106,73 +120,104 @@ html, body {
   top: 50%;
   transform: translateY(-50%);
   z-index: 2;
+  padding: 0 2px;
 }
 
 .step-dot {
-  width: 18px;
-  height: 18px;
+  width: 16px;
+  height: 16px;
   background: #e2e8f0;
   border: 2px solid #fff;
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 9px;
+  font-size: 0; /* Verberg tekst tenzij nodig */
   color: transparent;
   transition: 0.4s ease;
 }
 
-.step-dot.completed { background: var(--ld-primary); color: white; }
-.step-dot.active { border-color: var(--ld-primary); background: #fff; color: var(--ld-primary); transform: scale(1.1); }
+.step-dot.completed { background: var(--ld-primary); }
+.step-dot.active { border-color: var(--ld-primary); background: #fff; transform: scale(1.2); }
 
-/* --- Knoppen & Gender Buttons --- */
+/* --- Forms & Inputs --- */
+.field-group { margin-bottom: 16px; text-align: left; }
+.field-group label { display: block; font-size: 13px; font-weight: 600; margin-bottom: 6px; color: var(--ld-text-dark); }
+input[type="text"], input[type="email"], input[type="tel"] {
+  width: 100%; padding: 14px;
+  border: 1.5px solid var(--ld-border); border-radius: var(--radius-input);
+  font-family: var(--font-body); font-size: 16px;
+  box-sizing: border-box; transition: 0.2s;
+}
+input:focus { border-color: var(--ld-primary); outline: none; }
+
+/* --- Gender Buttons --- */
 .gender-segment { display: flex; gap: 12px; margin-bottom: 20px; }
 .gender-segment label { flex: 1; position: relative; cursor: pointer; }
 .gender-segment input[type="radio"] { position: absolute; opacity: 0; width: 0; height: 0; }
 .gender-segment span {
-  display: flex; align-items: center; justify-content: center; min-height: 48px;
-  background: #fff; border: 1.5px solid var(--ld-gray-border); border-radius: var(--radius-input);
-  font-weight: 600; transition: 0.2s;
+  display: flex; align-items: center; justify-content: center; min-height: 50px;
+  background: #fff; border: 1.5px solid var(--ld-border); border-radius: var(--radius-input);
+  font-weight: 600; font-size: 15px; transition: 0.2s;
 }
-.gender-segment input:checked + span { background: #f1f5f9; border-color: var(--ld-text-dark); }
+.gender-segment input:checked + span { background: #f0fdf4; border-color: var(--ld-primary); color: var(--ld-primary); }
 
+/* --- Buttons --- */
 .cta-primary, .btn-answer {
   width: 100%; padding: 18px; background: var(--ld-primary) !important;
   color: #fff !important; border: none !important; border-radius: var(--radius-input) !important;
   font-family: var(--font-header) !important; font-size: 16px !important;
   font-weight: 800 !important; text-transform: uppercase; cursor: pointer;
-  text-align: center; box-sizing: border-box;
+  text-align: center; box-sizing: border-box; letter-spacing: 0.5px;
+  transition: transform 0.1s ease, background 0.2s;
 }
+.cta-primary:hover, .btn-answer:hover { filter: brightness(1.05); }
+.cta-primary:active, .btn-answer:active { transform: scale(0.98); }
 
-.coreg-answers { display: flex; flex-direction: column; gap: 8px !important; margin-top: 15px; }
+/* --- Coreg Specifics (Gap 8px) --- */
+.coreg-answers { display: flex; flex-direction: column; gap: 8px !important; margin-top: 20px; }
 
 .btn-skip, .slideup-deny {
   all: unset !important; display: block !important; width: 100% !important;
-  padding: 14px 0 !important; background: #f1f5f9 !important;
-  color: #64748b !important; border-radius: var(--radius-input) !important;
-  font-size: 15px !important; font-weight: 600 !important; text-align: center !important;
-  cursor: pointer !important; margin-top: 8px !important;
+  padding: 14px 0 !important; background: transparent !important;
+  color: #94a3b8 !important; border-radius: var(--radius-input) !important;
+  font-size: 14px !important; font-weight: 600 !important; text-align: center !important;
+  cursor: pointer !important; margin-top: 10px !important;
+  text-decoration: underline;
 }
+.btn-skip:hover { color: var(--ld-text-dark) !important; }
 
-/* --- Dropdown --- */
+/* --- Dropdown Styling --- */
 .coreg-dropdown {
-  width: 100% !important; padding: 14px !important; border: 1.5px solid var(--ld-gray-border) !important;
+  width: 100% !important; padding: 16px !important; 
+  border: 1.5px solid var(--ld-border) !important;
   border-radius: var(--radius-input) !important; font-size: 16px !important;
   background-color: white !important; appearance: none !important;
-  background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e") !important;
+  background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23475569' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e") !important;
   background-repeat: no-repeat !important; background-position: right 1rem center !important; background-size: 1em !important;
+  cursor: pointer;
 }
 
-/* --- Tekstlinks --- */
-#open-actievoorwaarden-inline, .slideup-partner-link {
-    background: none !important; border: none !important; padding: 0 !important;
-    color: #000 !important; text-decoration: underline !important; cursor: pointer !important;
+/* --- Slide-up Partner Overlay --- */
+.sponsor-slideup {
+  position: absolute; bottom: 0; left: 0; right: 0;
+  background: white; border-top-left-radius: 16px; border-top-right-radius: 16px;
+  padding: 30px 25px; box-shadow: 0 -10px 40px rgba(0,0,0,0.15);
+  transform: translateY(110%); transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  z-index: 50; border-top: 1px solid var(--ld-border);
 }
+.sponsor-slideup.is-visible { transform: translateY(0); }
+.slideup-title { font-size: 20px; color: var(--ld-primary); margin-bottom: 10px; }
+.slideup-actions { margin-top: 20px; display: flex; flex-direction: column; gap: 10px; }
 
 /* --- Footer --- */
 #dynamic-footer {
-  flex-shrink: 0; width: 100%; padding: 60px 20px; background: #fff;
-  border-top: 1px solid #e2e8f0; text-align: center; font-size: 12px; color: #94a3b8;
+  flex-shrink: 0; width: 100%; background: #fff;
+  border-top: 1px solid var(--ld-border);
 }
 
-.coreg-image, #campaign-hero-image { width: 100%; aspect-ratio: 700 / 200; object-fit: cover; border-radius: 6px; margin-bottom: 20px; }
+.coreg-image, #campaign-hero-image { 
+  width: 100%; aspect-ratio: 16 / 9; 
+  object-fit: cover; border-radius: 8px; margin-bottom: 20px; 
+  background: #f1f5f9; /* placeholder kleur */
+}
