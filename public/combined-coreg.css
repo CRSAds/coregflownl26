@@ -16,7 +16,7 @@
   --font-body: 'Inter', sans-serif;
 }
 
-/* --- Layout: Footer onder de vouw & Boven uitlijning --- */
+/* --- Layout: Footer onder de vouw --- */
 html, body {
   margin: 0;
   padding: 0;
@@ -32,12 +32,12 @@ html, body {
   width: 100%;
   max-width: 480px;
   margin: 0 auto;
-  padding: 20px 15px 40px; /* Bovenkant 20px voor strakke look */
+  padding: 20px 15px 40px;
   box-sizing: border-box;
-  flex: 1 0 auto; /* Neemt alle ruimte in */
+  flex: 1 0 auto;
   display: flex;
   flex-direction: column;
-  justify-content: flex-start; /* Punt 3: Boven uitlijnen */
+  justify-content: flex-start;
 }
 
 /* --- De Kaart --- */
@@ -61,7 +61,7 @@ html, body {
   padding: 25px 30px 35px;
 }
 
-/* --- Progressie Balk --- */
+/* --- 🟢 Progressie Balk Styling (VOLLEDIG) --- */
 .progress-wrapper {
   background: #f8fafc;
   padding: 20px 30px 15px;
@@ -103,7 +103,36 @@ html, body {
   transition: width 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
-/* --- Knoppen & Gender Segment (Punt 4) --- */
+.progress-steps {
+  position: absolute;
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  top: 50%;
+  transform: translateY(-50%);
+  pointer-events: none;
+  z-index: 2;
+}
+
+.step-dot {
+  width: 18px;
+  height: 18px;
+  background: #e2e8f0;
+  border: 2px solid #fff;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 9px;
+  color: transparent;
+  transition: all 0.4s ease;
+}
+
+.step-dot.completed { background: var(--ld-primary); color: white; }
+.step-dot.active { border-color: var(--ld-primary); background: #fff; color: var(--ld-primary); transform: scale(1.1); }
+.step-dot:last-child.completed { background: #FFD700; border-color: #FFD700; }
+
+/* --- 🔵 Gender Knoppen Styling --- */
 .gender-segment {
   display: flex;
   gap: 12px;
@@ -133,7 +162,6 @@ html, body {
   border-radius: var(--radius-input);
   font-weight: 600;
   transition: all 0.2s;
-  text-align: center;
 }
 
 .gender-segment input:checked + span {
@@ -141,44 +169,7 @@ html, body {
   border-color: var(--ld-text-dark);
 }
 
-.cta-primary, .btn-answer {
-  width: 100%;
-  padding: 18px;
-  background: var(--ld-primary) !important;
-  color: #fff !important;
-  border: none !important;
-  border-radius: var(--radius-input) !important;
-  font-family: var(--font-header) !important;
-  font-size: 16px !important;
-  font-weight: 800 !important;
-  text-transform: uppercase;
-  cursor: pointer;
-  box-sizing: border-box;
-  text-align: center;
-}
-
-/* Coreg Answers Spacing */
-.coreg-answers {
-  display: flex;
-  flex-direction: column;
-  gap: 8px !important;
-  margin-top: 15px;
-}
-
-.btn-skip {
-  display: block;
-  width: 100%;
-  padding: 14px;
-  background: #f1f5f9 !important;
-  color: #64748b !important;
-  border: none;
-  border-radius: var(--radius-input);
-  margin-top: 8px;
-  font-weight: 600;
-  cursor: pointer;
-}
-
-/* --- Dropdown Styling (Punt 1) --- */
+/* --- 🟡 Dropdown Styling --- */
 .coreg-dropdown {
   width: 100% !important;
   padding: 14px !important;
@@ -196,36 +187,47 @@ html, body {
   background-size: 1em !important;
 }
 
-/* --- Slide-up & Footer --- */
-.sponsor-slideup {
-  position: absolute;
-  bottom: 0;
-  left: 0;
+/* --- Knoppen --- */
+.cta-primary, .btn-answer {
   width: 100%;
-  height: 100%;
-  background: #fff;
-  z-index: 100;
+  padding: 18px;
+  background: var(--ld-primary) !important;
+  color: #fff !important;
+  border: none !important;
+  border-radius: var(--radius-input) !important;
+  font-family: var(--font-header) !important;
+  font-size: 16px !important;
+  font-weight: 800 !important;
+  text-transform: uppercase;
+  cursor: pointer;
+  box-sizing: border-box;
+  text-align: center;
+}
+
+.coreg-answers {
   display: flex;
   flex-direction: column;
-  justify-content: center;
-  padding: 30px;
-  box-sizing: border-box;
-  transform: translateY(100%);
-  transition: transform 0.5s ease;
+  gap: 8px !important;
+  margin-top: 15px;
 }
 
-.sponsor-slideup.is-visible { transform: translateY(0); }
-
-.slideup-deny {
+/* --- Tekstlinks --- */
+#open-actievoorwaarden-inline, .slideup-partner-link, .slideup-deny {
     all: unset !important;
+    background: none !important;
+    border: none !important;
+    padding: 0 !important;
     color: #000 !important;
     text-decoration: underline !important;
-    margin-top: 15px !important;
     cursor: pointer !important;
-    display: block !important;
-    text-align: center !important;
+    font-weight: 400 !important;
+    font-family: var(--font-body) !important;
+    display: inline !important;
 }
 
+.slideup-deny { margin-top: 15px !important; display: block !important; text-align: center !important; }
+
+/* --- Footer --- */
 #dynamic-footer {
   flex-shrink: 0;
   width: 100%;
@@ -237,33 +239,10 @@ html, body {
   color: #94a3b8;
 }
 
-/* --- Forms & Media --- */
-.field-group { margin-bottom: 16px; }
-label { font-size: 14px; font-weight: 600; margin-bottom: 6px; display: block; }
-input[type="text"], input[type="email"], input[type="tel"] {
-  width: 100%;
-  padding: 14px;
-  border: 1.5px solid #cbd5e1;
-  border-radius: var(--radius-input);
-  font-family: var(--font-body);
-  font-size: 16px;
-  box-sizing: border-box;
-}
-
 #campaign-hero-image, .coreg-image {
   width: 100%;
   aspect-ratio: 700 / 200;
   object-fit: cover;
   border-radius: 6px;
   margin-bottom: 20px;
-}
-
-/* Tekstlinks */
-#open-actievoorwaarden-inline, .slideup-partner-link {
-    background: none !important;
-    border: none !important;
-    padding: 0 !important;
-    color: #000 !important;
-    text-decoration: underline !important;
-    cursor: pointer !important;
 }
