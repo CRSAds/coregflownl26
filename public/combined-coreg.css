@@ -175,44 +175,43 @@ input[type="text"], input[type="email"], input[type="tel"] {
 }
 
 /* ============================================================
-   ✅ COREG STYLING — Herstel conform Swipepages NL
+   ✅ COREG STYLING — Herstel Ratio & Button Width
    ============================================================ */
 
 .coreg-section {
   text-align: center;
 }
 
-/* 🖼️ 2. Afbeeldingen dwingen naar uniform formaat */
+/* 🖼️ 1. Afbeeldingen dwingen naar 700:200 ratio */
 .coreg-image {
   width: 100%;
-  aspect-ratio: 16 / 9; /* Of 600 / 300 afhankelijk van je bronmateriaal */
+  aspect-ratio: 700 / 200; /* Exact de gevraagde verhouding */
   object-fit: cover;
   border-radius: 12px;
   margin-bottom: 20px;
 }
 
 .coreg-title {
-  font-size: 20px;
+  font-size: 19px;
   font-weight: 800;
-  margin-bottom: 12px;
+  margin-bottom: 10px;
   color: var(--ld-text-dark);
 }
 
 .coreg-description {
-  font-size: 15px;
-  line-height: 1.5;
-  margin-bottom: 24px;
+  font-size: 14px;
+  line-height: 1.4;
+  margin-bottom: 20px;
   color: #444;
 }
 
-/* 🟢 1. Positive buttons spacing */
+/* 🟢 3. Ruimte tussen de buttons iets minder */
 .coreg-answers {
   display: flex;
   flex-direction: column;
-  gap: 12px; /* Meer ruimte tussen de groene knoppen */
+  gap: 8px; /* Verkleind van 12px naar 8px voor compactere look */
 }
 
-/* De groene buttons */
 .btn-answer {
   width: 100%;
   padding: 14px;
@@ -223,19 +222,23 @@ input[type="text"], input[type="email"], input[type="tel"] {
   font-weight: 700;
   font-size: 16px;
   cursor: pointer;
+  box-sizing: border-box;
 }
 
-/* ⚪ 3. De "Nee" optie styling (Lichtgrijs ipv Systeem) */
+/* ⚪ 2. De "Nee" button net zo breed als de positieve buttons */
 .btn-skip {
-  all: unset; /* Reset systeem styling */
-  display: inline-block;
-  margin-top: 15px;
-  padding: 8px 16px;
-  background-color: #f1f5f9 !important; /* Lichtgrijs */
+  all: unset;
+  display: block; /* Forceert volledige breedte */
+  width: 100%;    /* Gelijk aan .btn-answer */
+  box-sizing: border-box;
+  margin-top: 8px; /* Zelfde gap als tussen de andere knoppen */
+  padding: 14px;   /* Zelfde padding als de groene knoppen */
+  background-color: #f1f5f9 !important;
   color: #64748b !important;
-  border-radius: 8px;
-  font-size: 14px;
+  border-radius: 10px;
+  font-size: 15px;
   font-weight: 600;
+  text-align: center;
   cursor: pointer;
   transition: background 0.2s;
 }
@@ -253,5 +256,6 @@ input[type="text"], input[type="email"], input[type="tel"] {
   border-radius: 10px;
   font-size: 16px;
   background-color: white;
-  margin-bottom: 10px;
+  margin-bottom: 8px;
+  box-sizing: border-box;
 }
