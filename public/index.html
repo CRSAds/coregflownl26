@@ -17,8 +17,8 @@
             <div class="progress-wrapper">
                 <div class="progress-text">Ontdek je voordeel...</div>
                 <div class="ld-progress-container">
-                    <div class="ld-progress"><div class="progress-bar"></div></div>
-                    <div class="progress-steps"></div>
+                    <div class="ld-progress"><div class="progress-bar" id="main-progress-bar"></div></div>
+                    <div class="progress-steps" id="progress-steps"></div>
                 </div>
             </div>
             <div class="section-content text-center">
@@ -97,7 +97,7 @@
             </div>
             <div class="section-content">
                 <h2 class="text-center">Controleer je adres</h2>
-                <form id="long-form" class="modern-form-v2">
+                <form id="long-form">
                     <div class="field-group">
                         <label for="postcode">Postcode</label>
                         <input type="text" id="postcode" placeholder="1234 AB" required>
@@ -108,11 +108,11 @@
                     </div>
                     <div class="field-group">
                         <label for="straat">Straat</label>
-                        <input type="text" id="straat" placeholder="Wordt automatisch gezocht..." readonly>
+                        <input type="text" id="straat" placeholder="Zoeken..." readonly>
                     </div>
                     <div class="field-group">
                         <label for="woonplaats">Woonplaats</label>
-                        <input type="text" id="woonplaats" placeholder="Wordt automatisch gezocht..." readonly>
+                        <input type="text" id="woonplaats" placeholder="Zoeken..." readonly>
                     </div>
                     <div class="field-group">
                         <label for="telefoon">Telefoonnummer</label>
