@@ -149,3 +149,45 @@ body {
 .cta-primary:active {
   transform: scale(0.98);
 }
+
+/* combined-coreg.css herstel */
+
+/* Maak van de buttons clickable tekst */
+#open-actievoorwaarden-inline,
+.slideup-partner-link {
+    background: none !important;
+    border: none !important;
+    padding: 0 !important;
+    color: var(--ld-primary) !important;
+    text-decoration: underline !important;
+    cursor: pointer !important;
+    font-size: inherit !important;
+    font-family: inherit !important;
+}
+
+/* Slide-up container styling */
+.sponsor-slideup {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    background: #ffffff;
+    border-top: 1px solid #e2e8f0;
+    padding: 24px 20px;
+    box-sizing: border-box;
+    z-index: 100;
+    /* Verberg standaard onder de onderkant van de modern-form-v2 */
+    transform: translateY(105%); 
+    transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+    box-shadow: 0 -10px 25px rgba(0,0,0,0.1);
+}
+
+.sponsor-slideup.is-visible {
+    transform: translateY(0);
+}
+
+/* Zorg dat de vorm-container de slide-up kan bevatten */
+.modern-form-v2 {
+    position: relative;
+    overflow: hidden; /* Cruciaal om de slide-up te maskeren */
+}
