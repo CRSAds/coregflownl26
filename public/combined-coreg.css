@@ -259,3 +259,20 @@ input[type="text"], input[type="email"], input[type="tel"] {
   margin-bottom: 8px;
   box-sizing: border-box;
 }
+
+/* --- Progress Bar Styling --- */
+.ld-progress {
+  width: 100%;
+  height: 8px;
+  background-color: #e2e8f0; /* Lichtgrijze achtergrond */
+  border-radius: 4px;
+  margin-bottom: 20px;
+  overflow: hidden;
+}
+
+.progress-bar {
+  height: 100%;
+  width: 0%; /* Start op 0 */
+  background-color: var(--ld-primary);
+  transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
