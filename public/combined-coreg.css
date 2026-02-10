@@ -1,5 +1,5 @@
 /* ============================================================
-   ✅ combined-coreg.css — Definitieve Versie
+   ✅ combined-coreg.css — Definitieve Versie (Inclusief Stepper)
    ============================================================ */
 
 :root {
@@ -23,12 +23,12 @@ body {
   background-color: #f4f4f4;
   color: var(--ld-text-dark);
   display: flex;
-  flex-direction: column; /* Forceert verticale flow voor footer */
+  flex-direction: column;
   min-height: 100vh;
 }
 
 .main-flow-container {
-  flex: 1 0 auto; /* Neemt alle beschikbare ruimte in, duwt footer naar beneden */
+  flex: 1 0 auto;
   width: 100%;
   max-width: 500px;
   margin: 0 auto;
@@ -48,7 +48,7 @@ body {
   box-shadow: 0 12px 40px rgba(0, 0, 0, 0.1);
   margin-bottom: 20px;
   position: relative;
-  overflow: hidden; /* Belangrijk voor maskeren slide-up */
+  overflow: hidden;
   animation: fadeIn 0.4s ease-out;
 }
 
@@ -74,7 +74,96 @@ body {
   border-top: 1px solid #eee;
 }
 
-/* --- Clickable Tekst (Zwart, Onderstreept, Normaal) --- */
+/* --- Progress & Stepper Styling (NIEUW) --- */
+.progress-wrapper {
+  margin-bottom: 30px;
+  padding: 0 10px;
+}
+
+.progress-text {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--ld-primary);
+  margin-bottom: 12px;
+  text-align: center;
+  transition: all 0.3s ease;
+  min-height: 1.4em;
+}
+
+.ld-progress-container {
+  position: relative;
+  height: 24px;
+  display: flex;
+  align-items: center;
+}
+
+.ld-progress {
+  width: 100%;
+  height: 6px;
+  background-color: #e2e8f0;
+  border-radius: 3px;
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  overflow: hidden;
+}
+
+.progress-bar {
+  height: 100%;
+  width: 0%;
+  background-color: var(--ld-primary);
+  transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.progress-steps {
+  position: absolute;
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  top: 50%;
+  transform: translateY(-50%);
+  pointer-events: none;
+  z-index: 2;
+}
+
+.step-dot {
+  width: 20px;
+  height: 20px;
+  background: #e2e8f0;
+  border: 2px solid #fff;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 10px;
+  color: transparent;
+  transition: all 0.4s ease;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.step-dot.completed {
+  background: var(--ld-primary);
+  color: white;
+}
+
+.step-dot.active {
+  border-color: var(--ld-primary);
+  transform: scale(1.2);
+  background: #fff;
+  color: var(--ld-primary);
+}
+
+.step-dot:last-child {
+  font-size: 14px;
+  background: #fff;
+}
+
+.step-dot:last-child.completed {
+  background: #FFD700; /* Goud voor de finish */
+  border-color: #FFD700;
+}
+
+/* --- Clickable Tekst --- */
 #open-actievoorwaarden-inline,
 .slideup-partner-link,
 #trigger-partner-popup {
@@ -96,7 +185,7 @@ body {
     bottom: 0;
     left: 0;
     width: 100%;
-    height: 100%; /* Vult de hele kaart */
+    height: 100%;
     background: #ffffff;
     z-index: 100;
     display: flex;
@@ -106,7 +195,7 @@ body {
     padding: 30px;
     box-sizing: border-box;
     text-align: center;
-    transform: translateY(100%); /* Start buiten beeld */
+    transform: translateY(100%);
     transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
     box-shadow: 0 -10px 25px rgba(0,0,0,0.05);
 }
@@ -137,7 +226,6 @@ input[type="text"], input[type="email"], input[type="tel"] {
   font-size: 16px;
 }
 
-/* Gender Buttons */
 .gender-segment { display: flex; gap: 12px; margin-bottom: 20px; }
 .gender-segment label { flex: 1; position: relative; cursor: pointer; }
 .gender-segment input[type="radio"] { position: absolute; opacity: 0; }
@@ -149,7 +237,6 @@ input[type="text"], input[type="email"], input[type="tel"] {
 .gender-segment input:checked + span { background: #f1f5f9; border-color: #111; }
 .gender-segment input:checked + span::before { content: "✓"; margin-right: 8px; }
 
-/* Buttons */
 .cta-primary {
   width: 100%;
   padding: 16px;
@@ -167,50 +254,24 @@ input[type="text"], input[type="email"], input[type="tel"] {
   text-decoration: underline; margin-top: 15px; cursor: pointer;
 }
 
-/* Lander afbeelding fix */
 #campaign-hero-image {
   width: 100%;
   border-radius: 12px;
   margin-bottom: 20px;
 }
 
-/* ============================================================
-   ✅ COREG STYLING — Herstel Ratio & Button Width
-   ============================================================ */
-
-.coreg-section {
-  text-align: center;
-}
-
-/* 🖼️ 1. Afbeeldingen dwingen naar 700:200 ratio */
+/* --- Coreg Styling --- */
+.coreg-section { text-align: center; }
 .coreg-image {
   width: 100%;
-  aspect-ratio: 700 / 200; /* Exact de gevraagde verhouding */
+  aspect-ratio: 700 / 200;
   object-fit: cover;
   border-radius: 12px;
   margin-bottom: 20px;
 }
-
-.coreg-title {
-  font-size: 19px;
-  font-weight: 800;
-  margin-bottom: 10px;
-  color: var(--ld-text-dark);
-}
-
-.coreg-description {
-  font-size: 14px;
-  line-height: 1.4;
-  margin-bottom: 20px;
-  color: #444;
-}
-
-/* 🟢 3. Ruimte tussen de buttons iets minder */
-.coreg-answers {
-  display: flex;
-  flex-direction: column;
-  gap: 8px; /* Verkleind van 12px naar 8px voor compactere look */
-}
+.coreg-title { font-size: 19px; font-weight: 800; margin-bottom: 10px; color: var(--ld-text-dark); }
+.coreg-description { font-size: 14px; line-height: 1.4; margin-bottom: 20px; color: #444; }
+.coreg-answers { display: flex; flex-direction: column; gap: 8px; }
 
 .btn-answer {
   width: 100%;
@@ -225,14 +286,13 @@ input[type="text"], input[type="email"], input[type="tel"] {
   box-sizing: border-box;
 }
 
-/* ⚪ 2. De "Nee" button net zo breed als de positieve buttons */
 .btn-skip {
   all: unset;
-  display: block; /* Forceert volledige breedte */
-  width: 100%;    /* Gelijk aan .btn-answer */
+  display: block;
+  width: 100%;
   box-sizing: border-box;
-  margin-top: 8px; /* Zelfde gap als tussen de andere knoppen */
-  padding: 14px;   /* Zelfde padding als de groene knoppen */
+  margin-top: 8px;
+  padding: 14px;
   background-color: #f1f5f9 !important;
   color: #64748b !important;
   border-radius: 10px;
@@ -243,12 +303,8 @@ input[type="text"], input[type="email"], input[type="tel"] {
   transition: background 0.2s;
 }
 
-.btn-skip:hover {
-  background-color: #e2e8f0 !important;
-  color: #1e293b !important;
-}
+.btn-skip:hover { background-color: #e2e8f0 !important; color: #1e293b !important; }
 
-/* Dropdown styling */
 .coreg-dropdown {
   width: 100%;
   padding: 14px;
@@ -258,21 +314,4 @@ input[type="text"], input[type="email"], input[type="tel"] {
   background-color: white;
   margin-bottom: 8px;
   box-sizing: border-box;
-}
-
-/* --- Progress Bar Styling --- */
-.ld-progress {
-  width: 100%;
-  height: 8px;
-  background-color: #e2e8f0; /* Lichtgrijze achtergrond */
-  border-radius: 4px;
-  margin-bottom: 20px;
-  overflow: hidden;
-}
-
-.progress-bar {
-  height: 100%;
-  width: 0%; /* Start op 0 */
-  background-color: var(--ld-primary);
-  transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 }
