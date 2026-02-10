@@ -1,3 +1,6 @@
+/**
+ * ✅ initFlow-lite.js — Volledige Flow Engine
+ */
 (function () {
   let flowOrder = [];
   let currentStepIndex = 0;
@@ -20,28 +23,33 @@
       const result = await res.json();
       const config = result.data;
 
-      // Lander invullen
-      document.getElementById("campaign-title").innerHTML = config.title;
-      document.getElementById("campaign-paragraph").innerHTML = config.paragraph;
-      const hero = document.getElementById("campaign-hero-image");
-      if (hero && config.hero_image) { hero.src = config.hero_image; hero.style.display = 'block'; }
+      if (config) {
+        if (document.getElementById("campaign-title")) document.getElementById("campaign-title").innerHTML = config.title;
+        if (document.getElementById("campaign-paragraph")) document.getElementById("campaign-paragraph").innerHTML = config.paragraph;
+        
+        const hero = document.getElementById("campaign-hero-image");
+        if (hero && config.hero_image) {
+            hero.src = config.hero_image;
+            hero.style.display = 'block';
+        }
 
-      flowOrder = (config.flow && config.flow.length > 0) ? config.flow : ["lander", "shortform", "coreg", "sovendus"];
+        flowOrder = (config.flow && config.flow.length > 0) ? config.flow : ["lander", "shortform", "coreg", "sovendus"];
 
-      // Genereer bolletjes in ELKE sectie voor continuïteit
-      document.querySelectorAll(".progress-steps").forEach(container => {
-        container.innerHTML = "";
-        flowOrder.forEach((step, index) => {
-          const dot = document.createElement("div");
-          dot.className = "step-dot";
-          dot.innerHTML = (index === flowOrder.length - 1) ? "🎁" : "✓";
-          container.appendChild(dot);
+        // Teken bolletjes in alle secties
+        document.querySelectorAll(".progress-steps").forEach(container => {
+            container.innerHTML = "";
+            flowOrder.forEach((step, index) => {
+                const dot = document.createElement("div");
+                dot.className = "step-dot";
+                dot.innerHTML = (index === flowOrder.length - 1) ? "🎁" : "✓";
+                container.appendChild(dot);
+            });
         });
-      });
-      
-      renderStep(0);
+
+        renderStep(0);
+      }
     } catch (err) {
-      console.error("Flow Error:", err);
+      console.error("❌ Flow error:", err);
       renderStep(0);
     }
   }
@@ -56,7 +64,7 @@
     if (target) {
       target.classList.add("active");
       
-      // Update balk & tekst IN de actieve kaart
+      // Update elementen in de kaart
       const activeBar = target.querySelector(".progress-bar");
       const activeText = target.querySelector(".progress-text");
       const dots = target.querySelectorAll(".step-dot");
@@ -65,6 +73,7 @@
         const percentage = ((index + 1) / flowOrder.length) * 100;
         activeBar.style.width = `${percentage}%`;
       }
+      
       if (activeText) activeText.innerText = progressMessages[stepName] || "";
       
       dots.forEach((dot, i) => {
@@ -83,7 +92,10 @@
   }
 
   document.addEventListener("click", (e) => {
-    if (e.target.closest("[data-next-step]")) { e.preventDefault(); nextStep(); }
+    if (e.target.closest("[data-next-step]")) {
+      e.preventDefault();
+      nextStep();
+    }
   });
 
   document.addEventListener("shortFormSubmitted", nextStep);
