@@ -11,19 +11,19 @@
 </head>
 <body data-theme="dark">
 
-        <main id="flow-container" class="main-flow-container">
-            <div class="progress-wrapper">
-                <div id="progress-text" class="progress-text">Je reis begint hier...</div>
-                
-                <div class="ld-progress-container">
-                    <div class="ld-progress">
-                        <div class="progress-bar" id="main-progress-bar"></div>
-                    </div>
-                    <div class="progress-steps" id="progress-steps">
-                        </div>
-                </div>
-            </div>
+    <main id="flow-container" class="main-flow-container">
         
+        <div class="progress-wrapper">
+            <div id="progress-text" class="progress-text">Je reis begint hier...</div>
+            <div class="ld-progress-container">
+                <div class="ld-progress">
+                    <div class="progress-bar" id="main-progress-bar"></div>
+                </div>
+                <div class="progress-steps" id="progress-steps">
+                    </div>
+            </div>
+        </div>
+
         <section id="step-lander" class="flow-section">
             <div class="hero-wrapper">
                 <img id="campaign-hero-image" src="" alt="" style="display:none; width:100%; height:auto;">
@@ -71,11 +71,61 @@
             </div>
         </section>
 
-        <section id="step-coreg" class="flow-section"><div id="coreg-container"></div></section>
+        <section id="step-coreg" class="flow-section">
+            <div id="coreg-container"></div>
+        </section>
+
         <section id="step-longform" class="flow-section">
-            </section>
-        <section id="step-ivr" class="flow-section"><div id="ivr-content"></div></section>
-        <section id="step-sovendus" class="flow-section"><div id="sovendus-container-1"></div></section>
+            <div class="container">
+                <h2 class="text-center mb-20">Controleer je adres</h2>
+                <form id="long-form" class="modern-form-v2">
+                    <div class="field-group">
+                        <label for="postcode">Postcode</label>
+                        <input type="text" id="postcode" placeholder="1234 AB" required>
+                    </div>
+
+                    <div class="field-group">
+                        <label for="huisnummer">Huisnummer</label>
+                        <input type="text" id="huisnummer" placeholder="10" required>
+                    </div>
+
+                    <div class="field-group">
+                        <label for="straat">Straat</label>
+                        <input type="text" id="straat" placeholder="Wordt automatisch gezocht..." readonly>
+                    </div>
+
+                    <div class="field-group">
+                        <label for="woonplaats">Woonplaats</label>
+                        <input type="text" id="woonplaats" placeholder="Wordt automatisch gezocht..." readonly>
+                    </div>
+
+                    <div class="field-group">
+                        <label for="telefoon">Telefoonnummer</label>
+                        <input id="telefoon" type="tel" placeholder="0612345678" required>
+                    </div>
+
+                    <button type="button" id="submit-long-form" class="cta-primary" data-next-step>
+                        Gegevens bevestigen
+                    </button>
+                </form>
+            </div>
+        </section>
+
+        <section id="step-ivr" class="flow-section">
+            <div class="container text-center">
+                <div id="ivr-content">
+                    <h2>Verificatie</h2>
+                    <p>We bellen je nu op het opgegeven nummer voor een korte verificatie.</p>
+                    <div class="ivr-status-box">Wachten op verbinding...</div>
+                </div>
+            </div>
+        </section>
+
+        <section id="step-sovendus" class="flow-section">
+            <div class="container">
+                <div id="sovendus-container-1"></div>
+            </div>
+        </section>
 
     </main>
 
@@ -84,6 +134,7 @@
     <script>
         window.CURRENT_DOMAIN = window.location.hostname;
         const urlParams = new URLSearchParams(window.location.search);
+        // Slug detectie voor Directus
         window.CAMPAIGN_SLUG = urlParams.get('slug') || window.location.pathname.replace(/^\/|\/$/g, '') || "home";
     </script>
     
