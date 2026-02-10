@@ -1,3 +1,6 @@
+/**
+ * ✅ coregRenderer.js — Volledige Versie
+ */
 async function initCoregFlow() {
   const container = document.getElementById("coreg-container");
   if (!container) return;
@@ -22,6 +25,9 @@ async function initCoregFlow() {
     const section = btn.closest(".coreg-section");
     const next = section.nextElementSibling;
     
+    const val = btn.dataset.answer || "no";
+    sessionStorage.setItem(`coreg_answer_${btn.dataset.campaign}`, val);
+
     if (next) {
       section.style.display = "none";
       next.style.display = "block";
@@ -33,7 +39,12 @@ async function initCoregFlow() {
 
   sectionsContainer.addEventListener("change", (e) => {
     if (e.target.classList.contains("coreg-dropdown")) {
-      const section = e.target.closest(".coreg-section");
+      const select = e.target;
+      if (!select.value) return;
+      
+      sessionStorage.setItem(`coreg_answer_${select.dataset.campaign}`, select.value);
+      
+      const section = select.closest(".coreg-section");
       const next = section.nextElementSibling;
       if (next) {
         section.style.display = "none";
@@ -69,7 +80,7 @@ function renderCampaignBlock(campaign, isFirst) {
   } else {
     interactiveHtml = `
       <div class="coreg-answers">
-        ${answers.map(a => `<button class="btn-answer" data-answer="${a.answer_value}">${a.label}</button>`).join("")}
+        ${answers.map(a => `<button class="btn-answer" data-campaign="${campaign.id}" data-answer="${a.answer_value}">${a.label}</button>`).join("")}
       </div>`;
   }
 
@@ -79,7 +90,7 @@ function renderCampaignBlock(campaign, isFirst) {
       <h3 class="coreg-title">${campaign.title}</h3>
       <p class="coreg-description">${campaign.description || ""}</p>
       ${interactiveHtml}
-      <button class="btn-skip">Nee, bedankt</button>
+      <button class="btn-skip" data-campaign="${campaign.id}" data-answer="no">Nee, bedankt</button>
     </div>`;
 }
 
