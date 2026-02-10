@@ -1,5 +1,5 @@
 /**
- * ✅ coregRenderer.js — Headless NL Fix
+ * ✅ coregRenderer.js — Headless NL Fix (Full Width Skip)
  */
 
 async function fetchCampaigns() {
@@ -23,14 +23,15 @@ async function initCoregFlow() {
     return;
   }
   
-  const sectionsContainer = document.getElementById("coreg-sections") || container;
-  sectionsContainer.innerHTML = "";
+  // Zorg dat we in een schone container werken
+  container.innerHTML = '<div id="coreg-sections"></div>';
+  const sectionsContainer = document.getElementById("coreg-sections");
 
   campaigns.forEach((camp, idx) => {
     sectionsContainer.innerHTML += renderCampaignBlock(camp, idx === 0);
   });
 
-  // 🖱️ Central Event Listener
+  // Central Click Listener
   sectionsContainer.addEventListener("click", async (e) => {
     const btn = e.target.closest(".btn-answer, .btn-skip");
     if (!btn) return;
@@ -38,7 +39,7 @@ async function initCoregFlow() {
     const section = btn.closest(".coreg-section");
     const nextStep = section.nextElementSibling;
     
-    // Antwoord opslaan (als het geen skip is)
+    // Opslaan van antwoord
     if (btn.classList.contains("btn-answer")) {
       const campId = btn.dataset.campaign;
       const val = btn.dataset.answer;
@@ -54,19 +55,15 @@ async function initCoregFlow() {
     }
   });
 
-  // ⬇️ 4. Dropdown direct antwoorden bij selectie
+  // Dropdown Listener
   sectionsContainer.addEventListener("change", (e) => {
     if (e.target.classList.contains("coreg-dropdown")) {
       const select = e.target;
       if (!select.value) return;
 
       const section = select.closest(".coreg-section");
-      const campId = select.dataset.campaign;
+      sessionStorage.setItem(`f_2575_coreg_answer_dropdown_${select.dataset.campaign}`, select.value);
       
-      // Opslaan
-      sessionStorage.setItem(`f_2575_coreg_answer_dropdown_${campId}`, select.value);
-      
-      // Direct door naar volgende
       const nextStep = section.nextElementSibling;
       if (nextStep) {
         section.style.display = "none";
@@ -82,7 +79,7 @@ async function initCoregFlow() {
 function renderCampaignBlock(campaign, isFirst) {
   const imageUrl = campaign.image?.id 
     ? `https://cms.core.909play.com/assets/${campaign.image.id}` 
-    : "https://via.placeholder.com/600x300";
+    : "https://via.placeholder.com/700x200";
 
   const isDropdown = campaign.ui_style === "dropdown";
   const answers = campaign.coreg_answers || [];
@@ -90,26 +87,25 @@ function renderCampaignBlock(campaign, isFirst) {
   let interactiveHtml = "";
 
   if (isDropdown) {
-    // ⬇️ 4. Geen extra button nodig bij dropdown
     interactiveHtml = `
-      <select class="coreg-dropdown" data-campaign="${campaign.id}">
-        <option value="">Maak een keuze...</option>
-        ${answers.map(a => `<option value="${a.answer_value}">${a.label}</option>`).join("")}
-      </select>
+      <div class="coreg-answers">
+        <select class="coreg-dropdown" data-campaign="${campaign.id}">
+          <option value="">Maak een keuze...</option>
+          ${answers.map(a => `<option value="${a.answer_value}">${a.label}</option>`).join("")}
+        </select>
+        <button type="button" class="btn-skip" data-campaign="${campaign.id}" data-answer="no">Nee, bedankt</button>
+      </div>
     `;
   } else {
-    // 🟢 1. Spacing wordt door CSS gap geregeld
     interactiveHtml = `
       <div class="coreg-answers">
         ${answers.map(a => `
           <button type="button" class="btn-answer" data-campaign="${campaign.id}" data-answer="${a.answer_value}">${a.label}</button>
         `).join("")}
+        <button type="button" class="btn-skip" data-campaign="${campaign.id}" data-answer="no">Nee, bedankt</button>
       </div>
     `;
   }
-
-  // ⚪ 3. Nee button altijd toevoegen, ook bij dropdown
-  const skipButton = `<button type="button" class="btn-skip" data-campaign="${campaign.id}" data-answer="no">Nee, bedankt</button>`;
 
   return `
     <div class="coreg-section" id="campaign-${campaign.id}" style="display: ${isFirst ? 'block' : 'none'}">
@@ -117,7 +113,6 @@ function renderCampaignBlock(campaign, isFirst) {
       <h3 class="coreg-title">${campaign.title}</h3>
       <p class="coreg-description">${campaign.description || ""}</p>
       ${interactiveHtml}
-      ${skipButton}
     </div>`;
 }
 
