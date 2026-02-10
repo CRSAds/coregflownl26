@@ -1,3 +1,6 @@
+/**
+ * ✅ formSubmit.js — Volledige Versie
+ */
 (function() {
   const SLIDEUP_TEMPLATE = `
     <div class="sponsor-slideup" id="sponsor-slideup">
@@ -23,9 +26,8 @@
       form.insertAdjacentHTML('beforeend', SLIDEUP_TEMPLATE);
     }
 
-    form.addEventListener("submit", async (e) => {
+    form.addEventListener("submit", (e) => {
       e.preventDefault();
-
       if (!form.checkValidity()) {
         form.reportValidity();
         return;
@@ -34,7 +36,6 @@
       const slideup = document.getElementById("sponsor-slideup");
       if (slideup) {
         slideup.classList.add("is-visible");
-        
         document.getElementById("slideup-confirm").onclick = () => finalize();
         document.getElementById("slideup-deny").onclick = () => finalize();
       } else {
@@ -42,7 +43,7 @@
       }
     });
 
-    async function finalize() {
+    function finalize() {
       sessionStorage.setItem("firstname", document.getElementById("firstname").value);
       sessionStorage.setItem("lastname", document.getElementById("lastname").value);
       sessionStorage.setItem("dob", document.getElementById("dob").value);
