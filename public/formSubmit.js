@@ -42,10 +42,22 @@
     });
 
     async function finalize() {
-      // Sla data op
+      // Sla data op in sessionStorage
       sessionStorage.setItem("firstname", document.getElementById("firstname").value);
-      // ... overige velden ...
       
+      // Overige velden uit de HTML
+      sessionStorage.setItem("lastname", document.getElementById("lastname").value);
+      sessionStorage.setItem("dob", document.getElementById("dob").value);
+      sessionStorage.setItem("email", document.getElementById("email").value);
+      
+      // Geslacht (Radio buttons)
+      const genderEl = document.querySelector("input[name='gender']:checked");
+      if (genderEl) {
+        sessionStorage.setItem("gender", genderEl.value);
+      }
+      
+      // Markeer als voltooid en stuur event naar de Flow Engine
+      sessionStorage.setItem("shortFormCompleted", "true");
       document.dispatchEvent(new Event("shortFormSubmitted"));
     }
 
