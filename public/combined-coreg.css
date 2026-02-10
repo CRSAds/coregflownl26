@@ -1,5 +1,5 @@
 /* ============================================================
-   ✅ combined-coreg.css — Volledig Styling Herstel
+   ✅ combined-coreg.css — Definitieve Versie
    ============================================================ */
 
 :root {
@@ -7,31 +7,48 @@
   --ld-primary-hover: #11985a;
   --ld-text-dark: #111111;
   --ld-gray-border: #d5e0df;
+  --radius-card: 24px;
   --radius-input: 8px;
-  --radius-button: 10px;
   --font-main: 'Plus Jakarta Sans', Inter, system-ui, sans-serif;
 }
 
-/* --- Basis Layout --- */
-body {
+/* --- Basis Layout & Footer fix --- */
+html, body {
+  height: 100%;
   margin: 0;
+}
+
+body {
   font-family: var(--font-main);
-  background-color: #f4f4f4; /* Fallback kleur */
+  background-color: #f4f4f4;
   color: var(--ld-text-dark);
   display: flex;
-  justify-content: center;
-  align-items: flex-start;
+  flex-direction: column; /* Forceert verticale flow voor footer */
   min-height: 100vh;
 }
 
 .main-flow-container {
+  flex: 1 0 auto; /* Neemt alle beschikbare ruimte in, duwt footer naar beneden */
   width: 100%;
   max-width: 500px;
-  padding: 20px;
+  margin: 0 auto;
+  padding: 20px 15px;
+  box-sizing: border-box;
 }
 
+/* --- De Kaart (Leesbaarheid & Glassmorphism) --- */
 .flow-section {
   display: none;
+  background: rgba(255, 255, 255, 0.94) !important;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.6);
+  border-radius: var(--radius-card);
+  padding: 30px !important;
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.1);
+  margin-bottom: 20px;
+  position: relative;
+  overflow: hidden; /* Belangrijk voor maskeren slide-up */
   animation: fadeIn 0.4s ease-out;
 }
 
@@ -44,150 +61,115 @@ body {
   to { opacity: 1; transform: translateY(0); }
 }
 
-/* --- De Kaart (Glassmorphism) --- */
-.modern-form-v2, .coreg-inner {
-  background: rgba(255, 255, 255, 0.92) !important;
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.6);
-  border-radius: 24px;
-  padding: 32px !important;
-  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.08);
-  margin-bottom: 20px;
-}
-
-/* --- Formulier Velden (Fix voor screenshot) --- */
-.field-group {
-  margin-bottom: 16px;
-  display: flex;
-  flex-direction: column; /* Forceert label boven input */
-}
-
-.modern-form-v2 label {
-  font-size: 14px;
-  font-weight: 700;
-  margin-bottom: 6px;
-  color: var(--ld-text-dark);
-}
-
-.modern-form-v2 input[type="text"],
-.modern-form-v2 input[type="email"],
-.modern-form-v2 input[type="tel"] {
-  width: 100% !important;
-  box-sizing: border-box;
-  padding: 14px 16px !important;
-  font-size: 16px !important;
-  border: 1.5px solid var(--ld-gray-border) !important;
-  border-radius: var(--radius-input) !important;
-  background: #ffffff !important;
-  transition: border-color 0.2s;
-}
-
-.modern-form-v2 input:focus {
-  border-color: var(--ld-primary) !important;
-  outline: none;
-  box-shadow: 0 0 0 3px rgba(20, 182, 112, 0.1);
-}
-
-/* --- Gender Knoppen (Met Vinkje) --- */
-.gender-segment {
-  display: flex;
-  gap: 12px;
-  margin-bottom: 24px;
-}
-
-.gender-segment label {
-  flex: 1;
-  position: relative;
-  cursor: pointer;
-}
-
-.gender-segment input[type="radio"] {
-  position: absolute;
-  opacity: 0;
-}
-
-.gender-segment span {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  min-height: 48px;
-  background: #ffffff;
-  border: 1.5px solid var(--ld-gray-border);
-  border-radius: 12px;
-  font-weight: 700;
-  color: var(--ld-text-dark);
-  transition: all 0.2s;
-}
-
-.gender-segment input:checked + span {
-  background-color: #f1f5f9 !important;
-  border-color: var(--ld-text-dark) !important;
-}
-
-.gender-segment input:checked + span::before {
-  content: "✓";
-  margin-right: 8px;
-  font-weight: 900;
-}
-
-/* --- Button --- */
-.cta-primary {
+/* --- Footer (Altijd onderaan) --- */
+#dynamic-footer {
+  flex-shrink: 0;
   width: 100%;
-  padding: 16px;
-  background: var(--ld-primary) !important;
-  color: #ffffff !important;
-  border: none !important;
-  border-radius: 12px !important;
-  font-size: 18px !important;
-  font-weight: 800 !important;
-  cursor: pointer;
-  box-shadow: 0 4px 14px rgba(20, 182, 112, 0.3);
-  transition: transform 0.2s;
+  background: #ffffff;
+  padding: 25px 15px;
+  box-sizing: border-box;
+  text-align: center;
+  font-size: 12px;
+  color: #666;
+  border-top: 1px solid #eee;
 }
 
-.cta-primary:active {
-  transform: scale(0.98);
-}
-
-/* combined-coreg.css herstel */
-
-/* Maak van de buttons clickable tekst */
+/* --- Clickable Tekst (Zwart, Onderstreept, Normaal) --- */
 #open-actievoorwaarden-inline,
-.slideup-partner-link {
+.slideup-partner-link,
+#trigger-partner-popup {
     background: none !important;
     border: none !important;
     padding: 0 !important;
-    color: var(--ld-primary) !important;
+    color: #000000 !important;
     text-decoration: underline !important;
+    font-weight: 400 !important;
     cursor: pointer !important;
     font-size: inherit !important;
     font-family: inherit !important;
+    display: inline !important;
 }
 
-/* Slide-up container styling */
+/* --- Slide-up Animatie --- */
 .sponsor-slideup {
     position: absolute;
     bottom: 0;
     left: 0;
     width: 100%;
+    height: 100%; /* Vult de hele kaart */
     background: #ffffff;
-    border-top: 1px solid #e2e8f0;
-    padding: 24px 20px;
-    box-sizing: border-box;
     z-index: 100;
-    /* Verberg standaard onder de onderkant van de modern-form-v2 */
-    transform: translateY(105%); 
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 30px;
+    box-sizing: border-box;
+    text-align: center;
+    transform: translateY(100%); /* Start buiten beeld */
     transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
-    box-shadow: 0 -10px 25px rgba(0,0,0,0.1);
+    box-shadow: 0 -10px 25px rgba(0,0,0,0.05);
 }
 
 .sponsor-slideup.is-visible {
     transform: translateY(0);
 }
 
-/* Zorg dat de vorm-container de slide-up kan bevatten */
-.modern-form-v2 {
-    position: relative;
-    overflow: hidden; /* Cruciaal om de slide-up te maskeren */
+.slideup-title { margin: 0 0 10px; font-size: 20px; font-weight: 800; }
+.slideup-text { font-size: 15px; margin-bottom: 20px; line-height: 1.4; }
+
+/* --- Formulier Styling --- */
+.field-group {
+  margin-bottom: 16px;
+  display: flex;
+  flex-direction: column;
+  text-align: left;
+}
+
+label { font-size: 14px; font-weight: 700; margin-bottom: 6px; }
+
+input[type="text"], input[type="email"], input[type="tel"] {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 14px;
+  border: 1.5px solid var(--ld-gray-border);
+  border-radius: var(--radius-input);
+  font-size: 16px;
+}
+
+/* Gender Buttons */
+.gender-segment { display: flex; gap: 12px; margin-bottom: 20px; }
+.gender-segment label { flex: 1; position: relative; cursor: pointer; }
+.gender-segment input[type="radio"] { position: absolute; opacity: 0; }
+.gender-segment span {
+  display: flex; align-items: center; justify-content: center;
+  min-height: 48px; background: #fff; border: 1.5px solid var(--ld-gray-border);
+  border-radius: 12px; font-weight: 700;
+}
+.gender-segment input:checked + span { background: #f1f5f9; border-color: #111; }
+.gender-segment input:checked + span::before { content: "✓"; margin-right: 8px; }
+
+/* Buttons */
+.cta-primary {
+  width: 100%;
+  padding: 16px;
+  background: var(--ld-primary) !important;
+  color: #fff !important;
+  border: none;
+  border-radius: 12px;
+  font-size: 18px;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.slideup-deny {
+  background: none; border: none; color: #666; 
+  text-decoration: underline; margin-top: 15px; cursor: pointer;
+}
+
+/* Lander afbeelding fix */
+#campaign-hero-image {
+  width: 100%;
+  border-radius: 12px;
+  margin-bottom: 20px;
 }
