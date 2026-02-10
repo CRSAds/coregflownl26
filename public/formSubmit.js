@@ -44,25 +44,29 @@
     });
 
     function finalize() {
-      // Sla alle relevante velden op in de sessie
-      sessionStorage.setItem("firstname", document.getElementById("firstname").value);
-      sessionStorage.setItem("lastname", document.getElementById("lastname").value);
-      sessionStorage.setItem("dob", document.getElementById("dob").value);
-      sessionStorage.setItem("email", document.getElementById("email").value);
-      
-      const genderEl = document.querySelector("input[name='gender']:checked");
-      if (genderEl) sessionStorage.setItem("gender", genderEl.value);
+      // Sla gegevens op
+      const formData = {
+        firstname: document.getElementById("firstname")?.value,
+        lastname: document.getElementById("lastname")?.value,
+        dob: document.getElementById("dob")?.value,
+        email: document.getElementById("email")?.value,
+        gender: document.querySelector("input[name='gender']:checked")?.value
+      };
 
-      // Trigger de Flow Engine om naar de volgende stap te gaan
+      Object.keys(formData).forEach(key => {
+        if (formData[key]) sessionStorage.setItem(key, formData[key]);
+      });
+
+      // Ga naar volgende stap
       document.dispatchEvent(new Event("shortFormSubmitted"));
     }
-    
-    // Klik-afhandeling voor de popup links
+
+    // Luister naar popup triggers voor partners
     document.addEventListener("click", (e) => {
-        if (e.target.id === "open-actievoorwaarden-inline" || e.target.id === "trigger-partner-popup" || e.target.classList.contains("slideup-partner-link")) {
+        if (e.target.id === "trigger-partner-popup" || e.target.id === "open-actievoorwaarden-inline") {
             e.preventDefault();
-            const trigger = document.getElementById("open-sponsor-popup");
-            if (trigger) trigger.click();
+            const popupTrigger = document.getElementById("open-sponsor-popup");
+            if (popupTrigger) popupTrigger.click();
         }
     });
   });
