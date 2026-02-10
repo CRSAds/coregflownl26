@@ -2,28 +2,30 @@
 <html lang="nl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Laden...</title>
-    <link rel="stylesheet" href="/combined-coreg.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Even geduld...</title>
     
-    <link rel="preload" href="/coregRenderer.js" as="script">
-    <link rel="preload" href="/initFlow-lite.js" as="script">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Montserrat:wght@700;800&display=swap" rel="stylesheet">
+    
+    <link rel="stylesheet" href="/combined-coreg.css">
 </head>
-<body data-theme="dark">
+<body data-theme="light">
 
     <main id="flow-container" class="main-flow-container">
         
         <section id="step-lander" class="flow-section">
             <div class="progress-wrapper">
-                <div class="progress-text">Ontdek je voordeel...</div>
+                <div class="progress-text">Ontdek je voordeel</div>
                 <div class="ld-progress-container">
-                    <div class="ld-progress"><div class="progress-bar" id="main-progress-bar"></div></div>
-                    <div class="progress-steps" id="progress-steps"></div>
+                    <div class="ld-progress"><div class="progress-bar"></div></div>
+                    <div class="progress-steps"></div>
                 </div>
             </div>
             <div class="section-content text-center">
                 <div class="hero-wrapper">
-                    <img id="campaign-hero-image" src="" alt="" style="display:none; width:100%; height:auto;">
+                    <img id="campaign-hero-image" src="" alt="" style="display:none;">
                 </div>
                 <h1 id="campaign-title">Laden...</h1>
                 <div id="campaign-paragraph">Even geduld...</div>
@@ -127,7 +129,7 @@
 
         <section id="step-ivr" class="flow-section">
             <div class="progress-wrapper">
-                <div class="progress-text">Laatste stap</div>
+                <div class="progress-text">Verificatie</div>
                 <div class="ld-progress-container">
                     <div class="ld-progress"><div class="progress-bar"></div></div>
                     <div class="progress-steps"></div>
@@ -159,14 +161,13 @@
 
     <script>
         window.CURRENT_DOMAIN = window.location.hostname;
-        const urlParams = new URLSearchParams(window.location.search);
-        window.CAMPAIGN_SLUG = urlParams.get('slug') || window.location.pathname.replace(/^\/|\/$/g, '') || "home";
     </script>
     
     <script src="/coregRenderer.js"></script>
     <script src="/formSubmit.js"></script>
     <script src="/footer-loader.js"></script>
     <script src="/cosponsors-loader.js"></script>
+    <script src="/consent-module.js"></script>
     <script src="/initFlow-lite.js"></script>
 </body>
 </html>
