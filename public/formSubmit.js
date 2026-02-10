@@ -44,6 +44,7 @@
     });
 
     function finalize() {
+      // Sla alle relevante velden op in de sessie
       sessionStorage.setItem("firstname", document.getElementById("firstname").value);
       sessionStorage.setItem("lastname", document.getElementById("lastname").value);
       sessionStorage.setItem("dob", document.getElementById("dob").value);
@@ -52,7 +53,17 @@
       const genderEl = document.querySelector("input[name='gender']:checked");
       if (genderEl) sessionStorage.setItem("gender", genderEl.value);
 
+      // Trigger de Flow Engine om naar de volgende stap te gaan
       document.dispatchEvent(new Event("shortFormSubmitted"));
     }
+    
+    // Klik-afhandeling voor de popup links
+    document.addEventListener("click", (e) => {
+        if (e.target.id === "open-actievoorwaarden-inline" || e.target.id === "trigger-partner-popup" || e.target.classList.contains("slideup-partner-link")) {
+            e.preventDefault();
+            const trigger = document.getElementById("open-sponsor-popup");
+            if (trigger) trigger.click();
+        }
+    });
   });
 })();
