@@ -1,10 +1,10 @@
 /**
- * ✅ coregRenderer.js — Hersteld voor Dynamische Opties & Flow
+ * ✅ coregRenderer.js — Headless NL Fix
  */
+
 async function fetchCampaigns() {
   try {
     const res = await fetch("/api/coreg.js", { cache: "no-store" });
-    if (!res.ok) throw new Error(`HTTP ${res.status}`);
     const json = await res.json();
     return json.data || [];
   } catch (err) {
@@ -23,29 +23,60 @@ async function initCoregFlow() {
     return;
   }
   
-  container.innerHTML = `<div id="coreg-sections"></div>`;
-  const sectionsContainer = container.querySelector("#coreg-sections");
+  const sectionsContainer = document.getElementById("coreg-sections") || container;
+  sectionsContainer.innerHTML = "";
 
   campaigns.forEach((camp, idx) => {
     sectionsContainer.innerHTML += renderCampaignBlock(camp, idx === 0);
   });
 
-  container.onclick = async (e) => {
-    const btn = e.target.closest(".btn-answer, .btn-skip, .coreg-dropdown");
-    if (!btn || e.target.tagName === 'SELECT') return;
+  // 🖱️ Central Event Listener
+  sectionsContainer.addEventListener("click", async (e) => {
+    const btn = e.target.closest(".btn-answer, .btn-skip");
+    if (!btn) return;
 
     const section = btn.closest(".coreg-section");
-    const nextSection = section.nextElementSibling;
+    const nextStep = section.nextElementSibling;
+    
+    // Antwoord opslaan (als het geen skip is)
+    if (btn.classList.contains("btn-answer")) {
+      const campId = btn.dataset.campaign;
+      const val = btn.dataset.answer;
+      sessionStorage.setItem(`f_2014_coreg_answer_${campId}`, val);
+    }
 
-    if (nextSection) {
+    if (nextStep) {
       section.style.display = "none";
-      nextSection.style.display = "block";
-      window.scrollTo({ top: 0, behavior: "smooth" });
+      nextStep.style.display = "block";
+      window.scrollTo(0, 0);
     } else {
-      console.log("🏁 Coreg flow afgerond");
       document.dispatchEvent(new Event("coregFinished"));
     }
-  };
+  });
+
+  // ⬇️ 4. Dropdown direct antwoorden bij selectie
+  sectionsContainer.addEventListener("change", (e) => {
+    if (e.target.classList.contains("coreg-dropdown")) {
+      const select = e.target;
+      if (!select.value) return;
+
+      const section = select.closest(".coreg-section");
+      const campId = select.dataset.campaign;
+      
+      // Opslaan
+      sessionStorage.setItem(`f_2575_coreg_answer_dropdown_${campId}`, select.value);
+      
+      // Direct door naar volgende
+      const nextStep = section.nextElementSibling;
+      if (nextStep) {
+        section.style.display = "none";
+        nextStep.style.display = "block";
+        window.scrollTo(0, 0);
+      } else {
+        document.dispatchEvent(new Event("coregFinished"));
+      }
+    }
+  });
 }
 
 function renderCampaignBlock(campaign, isFirst) {
@@ -53,37 +84,40 @@ function renderCampaignBlock(campaign, isFirst) {
     ? `https://cms.core.909play.com/assets/${campaign.image.id}` 
     : "https://via.placeholder.com/600x300";
 
-  // Check voor dropdown stijl of buttons
   const isDropdown = campaign.ui_style === "dropdown";
   const answers = campaign.coreg_answers || [];
 
   let interactiveHtml = "";
 
   if (isDropdown) {
+    // ⬇️ 4. Geen extra button nodig bij dropdown
     interactiveHtml = `
       <select class="coreg-dropdown" data-campaign="${campaign.id}">
         <option value="">Maak een keuze...</option>
         ${answers.map(a => `<option value="${a.answer_value}">${a.label}</option>`).join("")}
       </select>
-      <button class="cta-primary btn-answer mt-10" data-answer="dropdown-val">Verstuur</button>
     `;
   } else {
+    // 🟢 1. Spacing wordt door CSS gap geregeld
     interactiveHtml = `
       <div class="coreg-answers">
         ${answers.map(a => `
-          <button class="cta-primary btn-answer" data-answer="${a.answer_value}">${a.label}</button>
+          <button type="button" class="btn-answer" data-campaign="${campaign.id}" data-answer="${a.answer_value}">${a.label}</button>
         `).join("")}
-        <button class="btn-skip" data-answer="no">Nee, bedankt</button>
       </div>
     `;
   }
 
+  // ⚪ 3. Nee button altijd toevoegen, ook bij dropdown
+  const skipButton = `<button type="button" class="btn-skip" data-campaign="${campaign.id}" data-answer="no">Nee, bedankt</button>`;
+
   return `
-    <div class="coreg-section" data-cid="${campaign.cid}" style="display: ${isFirst ? 'block' : 'none'}">
+    <div class="coreg-section" id="campaign-${campaign.id}" style="display: ${isFirst ? 'block' : 'none'}">
       <img src="${imageUrl}" class="coreg-image" alt="${campaign.title}">
-      <h3>${campaign.title}</h3>
-      <p>${campaign.description || ""}</p>
+      <h3 class="coreg-title">${campaign.title}</h3>
+      <p class="coreg-description">${campaign.description || ""}</p>
       ${interactiveHtml}
+      ${skipButton}
     </div>`;
 }
 
