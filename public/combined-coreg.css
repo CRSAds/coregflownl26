@@ -173,3 +173,85 @@ input[type="text"], input[type="email"], input[type="tel"] {
   border-radius: 12px;
   margin-bottom: 20px;
 }
+
+/* ============================================================
+   ✅ COREG STYLING — Herstel conform Swipepages NL
+   ============================================================ */
+
+.coreg-section {
+  text-align: center;
+}
+
+/* 🖼️ 2. Afbeeldingen dwingen naar uniform formaat */
+.coreg-image {
+  width: 100%;
+  aspect-ratio: 16 / 9; /* Of 600 / 300 afhankelijk van je bronmateriaal */
+  object-fit: cover;
+  border-radius: 12px;
+  margin-bottom: 20px;
+}
+
+.coreg-title {
+  font-size: 20px;
+  font-weight: 800;
+  margin-bottom: 12px;
+  color: var(--ld-text-dark);
+}
+
+.coreg-description {
+  font-size: 15px;
+  line-height: 1.5;
+  margin-bottom: 24px;
+  color: #444;
+}
+
+/* 🟢 1. Positive buttons spacing */
+.coreg-answers {
+  display: flex;
+  flex-direction: column;
+  gap: 12px; /* Meer ruimte tussen de groene knoppen */
+}
+
+/* De groene buttons */
+.btn-answer {
+  width: 100%;
+  padding: 14px;
+  background: var(--ld-primary) !important;
+  color: white !important;
+  border: none !important;
+  border-radius: 10px !important;
+  font-weight: 700;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+/* ⚪ 3. De "Nee" optie styling (Lichtgrijs ipv Systeem) */
+.btn-skip {
+  all: unset; /* Reset systeem styling */
+  display: inline-block;
+  margin-top: 15px;
+  padding: 8px 16px;
+  background-color: #f1f5f9 !important; /* Lichtgrijs */
+  color: #64748b !important;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.btn-skip:hover {
+  background-color: #e2e8f0 !important;
+  color: #1e293b !important;
+}
+
+/* Dropdown styling */
+.coreg-dropdown {
+  width: 100%;
+  padding: 14px;
+  border: 1.5px solid var(--ld-gray-border);
+  border-radius: 10px;
+  font-size: 16px;
+  background-color: white;
+  margin-bottom: 10px;
+}
