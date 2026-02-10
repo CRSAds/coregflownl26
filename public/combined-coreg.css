@@ -2,7 +2,6 @@
    ✅ combined-coreg.css — Volledige High-End UI Versie
    ============================================================ */
 
-/* 1. Fonts & Basis */
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Montserrat:wght@800&display=swap');
 
 :root {
@@ -11,7 +10,7 @@
   --ld-text-dark: #0f172a;
   --ld-text-gray: #475569;
   --ld-gray-border: #e2e8f0;
-  --radius-card: 12px; /* Strakkere hoeken */
+  --radius-card: 12px;
   --radius-input: 6px;
   --font-header: 'Montserrat', sans-serif;
   --font-body: 'Inter', sans-serif;
@@ -25,32 +24,30 @@ html, body {
   background-color: #f8fafc;
   font-family: var(--font-body);
   color: var(--ld-text-dark);
-  display: block; /* Zorgt dat footer onder de vouw komt */
+  display: block;
 }
 
-/* 2. Layout Container */
+/* De container vult minimaal het hele scherm voor de footer-fix */
 .main-flow-container {
   width: 100%;
   max-width: 480px;
   margin: 0 auto;
   padding: 40px 15px;
   box-sizing: border-box;
-  min-height: 100vh; /* Schermvullend maken */
+  min-height: 100vh;
 }
 
-/* 3. De Kaart (Glassmorphism & Strakke schaduw) */
+/* De Kaart */
 .flow-section {
   display: none;
   background: #ffffff !important;
   border: 1px solid rgba(0, 0, 0, 0.05);
   border-radius: var(--radius-card);
-  /* Strakkere, gelaagde schaduw */
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 
-              0 2px 4px -1px rgba(0, 0, 0, 0.06), 
-              0 20px 25px -5px rgba(0, 0, 0, 0.05);
-  padding: 0 !important; 
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 20px 25px -5px rgba(0, 0, 0, 0.05);
+  padding: 0 !important;
   position: relative;
-  overflow: hidden;
+  overflow: hidden; /* Belangrijk voor het maskeren van de slide-up */
+  margin-bottom: 40px;
   animation: fadeIn 0.3s ease-out;
 }
 
@@ -63,14 +60,13 @@ html, body {
   to { opacity: 1; transform: translateY(0); }
 }
 
-/* Content wrapper binnen de kaart */
 .section-content {
   padding: 25px 30px 35px;
 }
 
-/* 4. Progressie & Stepper (Geïntegreerd in kaart) */
+/* Progressie Balk (Geïntegreerd bovenin de kaart) */
 .progress-wrapper {
-  background: #f8fafc; /* Subtiele achtergrond voor balk-gedeelte */
+  background: #f8fafc;
   padding: 20px 30px 15px;
   border-bottom: 1px solid #f1f5f9;
 }
@@ -79,7 +75,6 @@ html, body {
   font-family: var(--font-header);
   font-size: 13px;
   text-transform: uppercase;
-  letter-spacing: 0.05em;
   color: var(--ld-primary);
   margin-bottom: 12px;
   font-weight: 800;
@@ -88,168 +83,27 @@ html, body {
 
 .ld-progress-container {
   position: relative;
-  height: 24px;
-  display: flex;
-  align-items: center;
-}
-
-.ld-progress {
-  width: 100%;
   height: 6px;
-  background-color: #e2e8f0;
+  background: #e2e8f0;
   border-radius: 100px;
-  position: absolute;
-  top: 50%;
-  transform: translateY(-50%);
-  overflow: hidden;
 }
 
 .progress-bar {
   height: 100%;
+  background: var(--ld-primary);
+  border-radius: 100px;
   width: 0%;
-  background-color: var(--ld-primary);
   transition: width 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
-.progress-steps {
-  position: absolute;
-  width: 100%;
-  display: flex;
-  justify-content: space-between;
-  top: 50%;
-  transform: translateY(-50%);
-  pointer-events: none;
-  z-index: 2;
-}
-
-.step-dot {
-  width: 18px;
-  height: 18px;
-  background: #e2e8f0;
-  border: 2px solid #fff;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 9px;
-  color: transparent;
-  transition: all 0.4s ease;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
-}
-
-.step-dot.completed {
-  background: var(--ld-primary);
-  color: white;
-}
-
-.step-dot.active {
-  border-color: var(--ld-primary);
-  transform: scale(1.1);
-  background: #fff;
-  color: var(--ld-primary);
-}
-
-.step-dot:last-child {
-  font-size: 12px;
-  background: #fff;
-}
-
-.step-dot:last-child.completed {
-  background: #FFD700;
-  border-color: #FFD700;
-}
-
-/* 5. Typografie */
-h1, h2, h3, .coreg-title {
-  font-family: var(--font-header);
-  font-size: 24px;
-  line-height: 1.2;
-  margin-top: 0;
-  margin-bottom: 15px;
-  color: var(--ld-text-dark);
-}
-
-p, #campaign-paragraph, .coreg-description {
-  font-size: 16px;
-  line-height: 1.6;
-  color: var(--ld-text-gray);
-  margin-bottom: 20px;
-}
-
-/* 6. Formulier & Inputs */
-.field-group {
-  margin-bottom: 16px;
+/* Knoppen & Coreg Spacing (8px fix) */
+.coreg-answers {
   display: flex;
   flex-direction: column;
-  text-align: left;
+  gap: 8px !important;
+  margin-top: 10px;
 }
 
-label {
-  font-size: 14px;
-  font-weight: 600;
-  margin-bottom: 6px;
-  color: var(--ld-text-dark);
-}
-
-input[type="text"], 
-input[type="email"], 
-input[type="tel"] {
-  width: 100%;
-  box-sizing: border-box;
-  padding: 14px;
-  border: 1.5px solid #cbd5e1;
-  border-radius: var(--radius-input);
-  font-family: var(--font-body);
-  font-size: 16px; 
-  transition: border-color 0.2s;
-}
-
-input:focus {
-  border-color: var(--ld-primary);
-  outline: none;
-}
-
-/* Gender Selectie */
-.gender-segment {
-  display: flex;
-  gap: 12px;
-  margin-bottom: 20px;
-}
-
-.gender-segment label {
-  flex: 1;
-  position: relative;
-  cursor: pointer;
-}
-
-.gender-segment input[type="radio"] {
-  position: absolute;
-  opacity: 0;
-}
-
-.gender-segment span {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  min-height: 48px;
-  background: #fff;
-  border: 1.5px solid #cbd5e1;
-  border-radius: var(--radius-input);
-  font-weight: 600;
-  transition: all 0.2s;
-}
-
-.gender-segment input:checked + span {
-  background: #f1f5f9;
-  border-color: var(--ld-text-dark);
-}
-
-.gender-segment input:checked + span::before {
-  content: "✓";
-  margin-right: 8px;
-}
-
-/* 7. Buttons */
 .cta-primary, .btn-answer {
   width: 100%;
   padding: 18px;
@@ -261,9 +115,11 @@ input:focus {
   font-size: 16px !important;
   font-weight: 800 !important;
   text-transform: uppercase;
-  letter-spacing: 0.02em;
   cursor: pointer;
-  box-shadow: 0 4px 6px -1px rgba(20, 182, 112, 0.2);
+  display: block;
+  text-align: center;
+  box-sizing: border-box;
+  text-decoration: none;
   transition: transform 0.1s;
 }
 
@@ -271,7 +127,79 @@ input:focus {
   transform: scale(0.98);
 }
 
-/* 8. Clickable Tekst & Links */
+.btn-skip {
+  display: block;
+  width: 100%;
+  margin-top: 8px;
+  padding: 14px;
+  background-color: #f1f5f9 !important;
+  color: #64748b !important;
+  border-radius: var(--radius-input);
+  font-size: 15px;
+  font-weight: 600;
+  text-align: center;
+  cursor: pointer;
+  border: none;
+}
+
+/* Custom Dropdown Styling */
+.coreg-dropdown {
+  width: 100%;
+  padding: 14px;
+  border: 1.5px solid var(--ld-gray-border);
+  border-radius: var(--radius-input);
+  font-size: 16px;
+  font-family: var(--font-body);
+  background-color: white;
+  margin-bottom: 8px;
+  appearance: none;
+  background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+  background-repeat: no-repeat;
+  background-position: right 1rem center;
+  background-size: 1em;
+}
+
+/* Slide-up (Verborgen onder de kaart) */
+.sponsor-slideup {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: #ffffff;
+  z-index: 100;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 30px;
+  box-sizing: border-box;
+  text-align: center;
+  transform: translateY(100%);
+  transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.sponsor-slideup.is-visible {
+  transform: translateY(0);
+}
+
+/* Typografie & Media */
+h1, h2, h3, .coreg-title {
+  font-family: var(--font-header);
+  font-size: 24px;
+  line-height: 1.2;
+  margin-bottom: 15px;
+}
+
+.coreg-image, #campaign-hero-image {
+  width: 100%;
+  aspect-ratio: 700 / 200;
+  object-fit: cover;
+  border-radius: var(--radius-input);
+  margin-bottom: 20px;
+}
+
+/* Clickable Tekst */
 #open-actievoorwaarden-inline,
 .slideup-partner-link,
 #trigger-partner-popup {
@@ -286,45 +214,13 @@ input:focus {
     display: inline !important;
 }
 
-/* 9. Coreg Specifiek */
-.coreg-image {
-  width: 100%;
-  aspect-ratio: 700 / 200;
-  object-fit: cover;
-  border-radius: var(--radius-input);
-  margin-bottom: 20px;
-}
-
-.btn-skip {
-  all: unset;
-  display: block;
-  width: 100%;
-  box-sizing: border-box;
-  margin-top: 8px;
-  padding: 14px;
-  background-color: #f1f5f9 !important;
-  color: #64748b !important;
-  border-radius: var(--radius-input);
-  font-size: 15px;
-  font-weight: 600;
-  text-align: center;
-  cursor: pointer;
-}
-
-/* 10. Footer (Onder de fold) */
+/* Footer (Na de fold) */
 #dynamic-footer {
-  margin-top: 60px;
-  padding: 40px 20px;
+  width: 100%;
+  padding: 60px 20px;
   background: #ffffff;
   border-top: 1px solid #e2e8f0;
   text-align: center;
   font-size: 13px;
   color: #94a3b8;
-  line-height: 1.6;
-}
-
-#campaign-hero-image {
-  width: 100%;
-  border-radius: var(--radius-input);
-  margin-bottom: 20px;
 }
