@@ -47,12 +47,26 @@
   function renderStep(index) {
     currentStepIndex = index;
     const stepName = flowOrder[index];
+    
+    // 1. Update de Progressiebalk
+    const progressBar = document.getElementById("main-progress-bar");
+    if (progressBar) {
+      // We berekenen het percentage: (huidige stap + 1) / totaal aantal stappen
+      const progressPercentage = ((index + 1) / flowOrder.length) * 100;
+      progressBar.style.width = `${progressPercentage}%`;
+    }
+  
+    // 2. Toon de juiste sectie
     document.querySelectorAll(".flow-section").forEach(s => s.classList.remove("active"));
     const target = document.getElementById(`step-${stepName}`);
+    
     if (target) {
       target.classList.add("active");
-      window.scrollTo(0, 0);
+      window.scrollTo({ top: 0, behavior: "smooth" });
+      
+      // Initialiseer specifieke secties
       if (stepName === "coreg") window.initCoregFlow?.();
+      if (stepName === "sovendus") window.setupSovendus?.();
     }
   }
 
