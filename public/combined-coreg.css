@@ -11,7 +11,7 @@
   --ld-text-dark: #0f172a;
   --ld-text-gray: #475569;
   --ld-gray-border: #e2e8f0;
-  --radius-card: 12px;
+  --radius-card: 12px; /* Strakkere hoeken */
   --radius-input: 6px;
   --font-header: 'Montserrat', sans-serif;
   --font-body: 'Inter', sans-serif;
@@ -25,16 +25,17 @@ html, body {
   background-color: #f8fafc;
   font-family: var(--font-body);
   color: var(--ld-text-dark);
-  display: block; /* Zorgt dat de footer onder de vouw komt bij scrollen */
+  display: block; /* Zorgt dat footer onder de vouw komt */
 }
 
 /* 2. Layout Container */
 .main-flow-container {
   width: 100%;
   max-width: 480px;
-  margin: 40px auto;
-  padding: 0 15px;
+  margin: 0 auto;
+  padding: 40px 15px;
   box-sizing: border-box;
+  min-height: 100vh; /* Schermvullend maken */
 }
 
 /* 3. De Kaart (Glassmorphism & Strakke schaduw) */
@@ -47,7 +48,7 @@ html, body {
   box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 
               0 2px 4px -1px rgba(0, 0, 0, 0.06), 
               0 20px 25px -5px rgba(0, 0, 0, 0.05);
-  padding: 0 !important; /* Ruimte wordt geregeld door wrapper en content */
+  padding: 0 !important; 
   position: relative;
   overflow: hidden;
   animation: fadeIn 0.3s ease-out;
@@ -69,7 +70,7 @@ html, body {
 
 /* 4. Progressie & Stepper (Geïntegreerd in kaart) */
 .progress-wrapper {
-  background: #f8fafc;
+  background: #f8fafc; /* Subtiele achtergrond voor balk-gedeelte */
   padding: 20px 30px 15px;
   border-bottom: 1px solid #f1f5f9;
 }
@@ -199,7 +200,7 @@ input[type="tel"] {
   border: 1.5px solid #cbd5e1;
   border-radius: var(--radius-input);
   font-family: var(--font-body);
-  font-size: 16px; /* Voorkomt zoom op iOS */
+  font-size: 16px; 
   transition: border-color 0.2s;
 }
 
@@ -208,7 +209,7 @@ input:focus {
   outline: none;
 }
 
-/* Gender / Radio Segment */
+/* Gender Selectie */
 .gender-segment {
   display: flex;
   gap: 12px;
@@ -249,24 +250,24 @@ input:focus {
 }
 
 /* 7. Buttons */
-.cta-primary {
+.cta-primary, .btn-answer {
   width: 100%;
   padding: 18px;
   background: var(--ld-primary) !important;
   color: #fff !important;
-  border: none;
-  border-radius: var(--radius-input);
-  font-family: var(--font-header);
-  font-size: 16px;
-  font-weight: 800;
+  border: none !important;
+  border-radius: var(--radius-input) !important;
+  font-family: var(--font-header) !important;
+  font-size: 16px !important;
+  font-weight: 800 !important;
   text-transform: uppercase;
   letter-spacing: 0.02em;
   cursor: pointer;
-  transition: transform 0.1s, background 0.2s;
   box-shadow: 0 4px 6px -1px rgba(20, 182, 112, 0.2);
+  transition: transform 0.1s;
 }
 
-.cta-primary:active {
+.cta-primary:active, .btn-answer:active {
   transform: scale(0.98);
 }
 
@@ -285,53 +286,13 @@ input:focus {
     display: inline !important;
 }
 
-/* 9. Slide-up Animatie */
-.sponsor-slideup {
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: #ffffff;
-    z-index: 100;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    padding: 30px;
-    box-sizing: border-box;
-    text-align: center;
-    transform: translateY(100%);
-    transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
-}
-
-.sponsor-slideup.is-visible {
-    transform: translateY(0);
-}
-
-.slideup-deny {
-  background: none;
-  border: none;
-  color: var(--ld-text-gray);
-  text-decoration: underline;
-  margin-top: 15px;
-  cursor: pointer;
-  font-size: 14px;
-}
-
-/* 10. Coreg Specifiek */
+/* 9. Coreg Specifiek */
 .coreg-image {
   width: 100%;
   aspect-ratio: 700 / 200;
   object-fit: cover;
   border-radius: var(--radius-input);
   margin-bottom: 20px;
-}
-
-.coreg-answers {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
 }
 
 .btn-skip {
@@ -350,17 +311,7 @@ input:focus {
   cursor: pointer;
 }
 
-.coreg-dropdown {
-  width: 100%;
-  padding: 14px;
-  border: 1.5px solid #cbd5e1;
-  border-radius: var(--radius-input);
-  font-size: 16px;
-  background-color: white;
-  margin-bottom: 8px;
-}
-
-/* 11. Footer (Onder de fold) */
+/* 10. Footer (Onder de fold) */
 #dynamic-footer {
   margin-top: 60px;
   padding: 40px 20px;
