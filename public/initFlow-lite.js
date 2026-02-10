@@ -1,3 +1,6 @@
+/**
+ * ✅ initFlow-lite.js — Volledige Flow Engine
+ */
 (function () {
   let flowOrder = [];
   let currentStepIndex = 0;
@@ -32,6 +35,7 @@
 
         flowOrder = (config.flow && config.flow.length > 0) ? config.flow : ["lander", "shortform", "coreg", "sovendus"];
 
+        // Teken bolletjes in alle secties voor visuele continuïteit
         document.querySelectorAll(".progress-steps").forEach(container => {
             container.innerHTML = "";
             flowOrder.forEach((step, index) => {
