@@ -1,6 +1,3 @@
-/**
- * ✅ formSubmit.js — Volledige Versie
- */
 (function() {
   const SLIDEUP_TEMPLATE = `
     <div class="sponsor-slideup" id="sponsor-slideup">
@@ -44,30 +41,15 @@
     });
 
     function finalize() {
-      // Sla gegevens op
-      const formData = {
-        firstname: document.getElementById("firstname")?.value,
-        lastname: document.getElementById("lastname")?.value,
-        dob: document.getElementById("dob")?.value,
-        email: document.getElementById("email")?.value,
-        gender: document.querySelector("input[name='gender']:checked")?.value
-      };
+      sessionStorage.setItem("firstname", document.getElementById("firstname").value);
+      sessionStorage.setItem("lastname", document.getElementById("lastname").value);
+      sessionStorage.setItem("dob", document.getElementById("dob").value);
+      sessionStorage.setItem("email", document.getElementById("email").value);
+      
+      const genderEl = document.querySelector("input[name='gender']:checked");
+      if (genderEl) sessionStorage.setItem("gender", genderEl.value);
 
-      Object.keys(formData).forEach(key => {
-        if (formData[key]) sessionStorage.setItem(key, formData[key]);
-      });
-
-      // Ga naar volgende stap
       document.dispatchEvent(new Event("shortFormSubmitted"));
     }
-
-    // Luister naar popup triggers voor partners
-    document.addEventListener("click", (e) => {
-        if (e.target.id === "trigger-partner-popup" || e.target.id === "open-actievoorwaarden-inline") {
-            e.preventDefault();
-            const popupTrigger = document.getElementById("open-sponsor-popup");
-            if (popupTrigger) popupTrigger.click();
-        }
-    });
   });
 })();
