@@ -16,16 +16,21 @@
   --font-body: 'Inter', sans-serif;
 }
 
-/* --- Basis Layout --- */
-html, body {
+/* --- Layout: Footer onder de vouw --- */
+html {
+  height: 100%;
+}
+
+body {
   margin: 0;
   padding: 0;
   min-height: 100vh;
   background-color: #f8fafc;
   font-family: var(--font-body);
   color: var(--ld-text-dark);
-  display: flex;
-  flex-direction: column;
+  /* Grid dwingt footer naar beneden */
+  display: grid;
+  grid-template-rows: 1fr auto;
 }
 
 .main-flow-container {
@@ -34,10 +39,9 @@ html, body {
   margin: 0 auto;
   padding: 40px 15px;
   box-sizing: border-box;
-  flex: 1 0 auto; /* Neemt alle ruimte in boven de footer */
 }
 
-/* --- De Kaart (Alles intern) --- */
+/* --- De Kaart --- */
 .flow-section {
   display: none;
   background: #ffffff !important;
@@ -64,7 +68,7 @@ html, body {
   padding: 25px 30px 35px;
 }
 
-/* --- Progressie & Stepper --- */
+/* --- Progressie Balk (Binnen de kaart) --- */
 .progress-wrapper {
   background: #f8fafc;
   padding: 20px 30px 15px;
@@ -133,6 +137,7 @@ html, body {
 
 .step-dot.completed { background: var(--ld-primary); color: white; }
 .step-dot.active { border-color: var(--ld-primary); background: #fff; color: var(--ld-primary); transform: scale(1.1); }
+.step-dot:last-child.completed { background: #FFD700; border-color: #FFD700; }
 
 /* --- Knoppen & Velden --- */
 .field-group { margin-bottom: 16px; text-align: left; }
@@ -162,9 +167,12 @@ input[type="text"], input[type="email"], input[type="tel"] {
   cursor: pointer;
   box-sizing: border-box;
   text-align: center;
+  transition: transform 0.1s;
 }
 
-/* Fix: Coreg Button Spacing */
+.cta-primary:active { transform: scale(0.98); }
+
+/* Coreg Spacing (8px) */
 .coreg-answers {
   display: flex;
   flex-direction: column;
@@ -184,7 +192,7 @@ input[type="text"], input[type="email"], input[type="tel"] {
   cursor: pointer;
 }
 
-/* Fix: Custom Dropdown Look */
+/* Custom Dropdown Look */
 .coreg-dropdown {
   width: 100%;
   padding: 14px;
@@ -197,6 +205,22 @@ input[type="text"], input[type="email"], input[type="tel"] {
   background-position: right 1rem center;
   background-size: 1em;
   background-color: #fff;
+}
+
+/* --- Tekstlinkjes Styling (Fix voor Shortform) --- */
+.flow-section #open-actievoorwaarden-inline,
+.flow-section .slideup-partner-link,
+.flow-section #trigger-partner-popup {
+    all: unset !important;
+    background: none !important;
+    border: none !important;
+    padding: 0 !important;
+    color: #000000 !important;
+    text-decoration: underline !important;
+    cursor: pointer !important;
+    font-weight: 400 !important;
+    font-family: var(--font-body) !important;
+    display: inline !important;
 }
 
 /* --- Slide-up --- */
@@ -221,8 +245,7 @@ input[type="text"], input[type="email"], input[type="tel"] {
 
 /* --- Footer --- */
 #dynamic-footer {
-  flex-shrink: 0;
-  padding: 40px 20px;
+  padding: 60px 20px;
   background: #fff;
   border-top: 1px solid #e2e8f0;
   text-align: center;
@@ -230,7 +253,7 @@ input[type="text"], input[type="email"], input[type="tel"] {
   color: #94a3b8;
 }
 
-/* --- Media --- */
+/* --- Afbeeldingen --- */
 .coreg-image, #campaign-hero-image {
   width: 100%;
   aspect-ratio: 700 / 200;
