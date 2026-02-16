@@ -1,27 +1,10 @@
+/**
+ * ✅ formSubmit.js — Dynamische Slide-up & Lead Finalization
+ */
 (function() {
-  const SLIDEUP_TEMPLATE = `
-    <div class="sponsor-slideup" id="sponsor-slideup">
-      <div class="slideup-header">
-        <h3 class="slideup-title">Bijna klaar!</h3>
-      </div>
-      <p class="slideup-text">
-        Vind je het goed dat onze <button type="button" class="slideup-partner-link" id="trigger-partner-popup">partners</button> 
-        je vrijblijvend informeren over interessante aanbiedingen?
-      </p>
-      <div class="slideup-actions">
-        <button type="button" id="slideup-confirm" class="cta-primary">Ja, ga verder</button>
-        <button type="button" id="slideup-deny" class="slideup-deny">Nee, liever niet</button>
-      </div>
-    </div>
-  `;
-
   document.addEventListener("DOMContentLoaded", () => {
     const form = document.getElementById("lead-form");
     if (!form) return;
-
-    if (form.dataset.sponsorSlideup === "true") {
-      form.insertAdjacentHTML('beforeend', SLIDEUP_TEMPLATE);
-    }
 
     form.addEventListener("submit", (e) => {
       e.preventDefault();
@@ -30,15 +13,51 @@
         return;
       }
 
-      const slideup = document.getElementById("sponsor-slideup");
-      if (slideup) {
-        slideup.classList.add("is-visible");
-        document.getElementById("slideup-confirm").onclick = () => finalize();
-        document.getElementById("slideup-deny").onclick = () => finalize();
+      // Check of slide-up geactiveerd moet worden
+      const config = window.currentCampaignConfig;
+      if (form.dataset.sponsorSlideup === "true" && config) {
+        showSponsorSlideup(config);
       } else {
         finalize();
       }
     });
+
+    function showSponsorSlideup(config) {
+      // Verwijder bestaande als die er is
+      const oldSlideup = document.getElementById("sponsor-slideup");
+      if (oldSlideup) oldSlideup.remove();
+
+      const html = `
+        <div class="sponsor-slideup" id="sponsor-slideup">
+          <div class="slideup-header">
+            <h3 class="slideup-title">${config.slideup_title || 'Bijna klaar!'}</h3>
+          </div>
+          <p class="slideup-text">
+            ${config.slideup_text || 'Vind je het goed dat onze'} 
+            <button type="button" class="slideup-partner-link" id="trigger-partners">partners</button> 
+            ${config.slideup_text_suffix || 'je informeren over aanbiedingen?'}
+          </p>
+          <div class="slideup-actions">
+            <button type="button" id="slideup-confirm" class="cta-primary">Ja, ga verder</button>
+            <button type="button" id="slideup-deny" class="slideup-deny">Nee, liever niet</button>
+          </div>
+        </div>
+      `;
+
+      form.insertAdjacentHTML('beforeend', html);
+      
+      const slideup = document.getElementById("sponsor-slideup");
+      setTimeout(() => slideup.classList.add("is-visible"), 10);
+
+      // Event Listeners
+      document.getElementById("slideup-confirm").onclick = () => finalize();
+      document.getElementById("slideup-deny").onclick = () => finalize();
+      document.getElementById("trigger-partners").onclick = (e) => {
+        e.preventDefault();
+        // Trigger de globale partner popup vanuit cosponsors.js
+        document.dispatchEvent(new CustomEvent("openPartnerPopup"));
+      };
+    }
 
     function finalize() {
       sessionStorage.setItem("firstname", document.getElementById("firstname").value);
