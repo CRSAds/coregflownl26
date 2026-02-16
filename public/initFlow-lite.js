@@ -1,5 +1,6 @@
 /**
- * ✅ initFlow-lite.js — Flow Engine
+ * ✅ initFlow-lite.js — Herziene Flow Engine
+ * Beheert de flow-volgorde en deelt de globale configuratie.
  */
 (function () {
   let flowOrder = [];
@@ -19,13 +20,15 @@
     const slug = urlParams.get('slug') || window.location.pathname.split('/').filter(Boolean).pop() || "home";
     
     try {
-      // Directus aanroep
       const res = await fetch(`/api/campaignVisuals.js?slug=${slug}`);
       const result = await res.json();
       const config = result.data;
 
       if (config) {
-        // Content vullen
+        // ✅ Maak configuratie globaal beschikbaar voor andere modules (zoals de slide-up)
+        window.currentCampaignConfig = config;
+
+        // UI vullen
         const titleEl = document.getElementById("campaign-title");
         const paraEl = document.getElementById("campaign-paragraph");
         if(titleEl) titleEl.innerHTML = config.title;
@@ -40,24 +43,20 @@
         // Bepaal flow volgorde
         flowOrder = (config.flow && config.flow.length > 0) ? config.flow : ["lander", "shortform", "coreg", "sovendus"];
 
-        // Initialiseer bolletjes in ELKE sectie voor visuele consistentie
+        // Initialiseer bolletjes in ELKE sectie
         document.querySelectorAll(".progress-steps").forEach(container => {
             container.innerHTML = "";
-            flowOrder.forEach((step, index) => {
+            flowOrder.forEach(() => {
                 const dot = document.createElement("div");
                 dot.className = "step-dot";
-                // Laatste stap krijgt een kadootje, rest een vinkje
-                // dot.innerHTML = (index === flowOrder.length - 1) ? "🎁" : ""; 
                 container.appendChild(dot);
             });
         });
 
-        // Start eerste stap
         renderStep(0);
       }
     } catch (err) {
       console.error("❌ Flow error:", err);
-      // Fallback flow als API faalt
       flowOrder = ["lander", "shortform", "coreg", "sovendus"];
       renderStep(0);
     }
@@ -67,36 +66,29 @@
     currentStepIndex = index;
     const stepName = flowOrder[index];
     
-    // Verberg alles
     document.querySelectorAll(".flow-section").forEach(s => s.classList.remove("active"));
     
-    // Toon huidige
     const target = document.getElementById(`step-${stepName}`);
-    
     if (target) {
       target.classList.add("active");
       
-      // Update interne progressiebalk van deze kaart
       const activeBar = target.querySelector(".progress-bar");
       const activeText = target.querySelector(".progress-text");
       const dots = target.querySelectorAll(".step-dot");
       
       if (activeBar) {
-        // Percentage berekening: (Huidige stap + 1) / Totaal
         const percentage = ((index + 1) / flowOrder.length) * 100;
         activeBar.style.width = `${percentage}%`;
       }
       
       if (activeText) activeText.innerText = progressMessages[stepName] || "Even geduld...";
       
-      // Update bolletjes status
       dots.forEach((dot, i) => {
         dot.classList.remove("completed", "active");
         if (i < index) dot.classList.add("completed");
         if (i === index) dot.classList.add("active");
       });
 
-      // Scroll naar boven
       window.scrollTo(0, 0);
 
       // Speciale triggers
@@ -109,12 +101,9 @@
     currentStepIndex++;
     if (currentStepIndex < flowOrder.length) {
         renderStep(currentStepIndex);
-    } else {
-        console.log("Flow voltooid");
     }
   }
 
-  // Event Listeners voor navigatie
   document.addEventListener("click", (e) => {
     if (e.target.closest("[data-next-step]")) {
       e.preventDefault();
@@ -122,10 +111,7 @@
     }
   });
 
-  // Custom events vanuit andere scripts
   document.addEventListener("shortFormSubmitted", nextStep);
   document.addEventListener("coregFinished", nextStep);
-
-  // Start bij laden
   document.addEventListener("DOMContentLoaded", initFlow);
 })();
