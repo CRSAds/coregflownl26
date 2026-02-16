@@ -10,11 +10,11 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Montserrat:wght@700;800&display=swap" rel="stylesheet">
     
     <link rel="stylesheet" href="/combined-coreg.css">
+    <script src="/ui-core.js"></script>
 </head>
 <body data-theme="light">
 
     <main id="flow-container" class="main-flow-container">
-        
         <section id="step-lander" class="flow-section">
             <div class="progress-wrapper">
                 <div class="progress-text">Ontdek je voordeel</div>
@@ -159,15 +159,11 @@
 
     <footer id="dynamic-footer"></footer>
 
-    <script>
-        window.CURRENT_DOMAIN = window.location.hostname;
-    </script>
-    
+    <script>window.CURRENT_DOMAIN = window.location.hostname;</script>
     <script src="/coregRenderer.js"></script>
     <script src="/formSubmit.js"></script>
     <script src="/footer-loader.js"></script>
-    <script src="/cosponsors-loader.js"></script>
-    <script src="/consent-module.js"></script>
+    <script src="/cosponsors.js"></script> <script src="/consent-module.js"></script>
     <script src="/initFlow-lite.js"></script>
 </body>
 </html>
