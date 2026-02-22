@@ -1,18 +1,18 @@
 /**
- * ✅ initFlow-lite.js — Herziene Flow Engine
- * Beheert de flow-volgorde en deelt de globale configuratie.
+ * ✅ initFlow-lite.js — UX Verbetering
+ * Beheert de progressiebalk met vinkjes en einddoel.
  */
 (function () {
   let flowOrder = [];
   let currentStepIndex = 0;
 
   const progressMessages = {
-    lander: "Ontdek je voordeel",
+    lander: "Start je aanvraag",
     shortform: "Jouw gegevens",
-    coreg: "Speciaal voor jou",
+    coreg: "Exclusieve deals",
     longform: "Adrescontrole",
-    ivr: "Verificatie",
-    sovendus: "Klaar! 🎁"
+    ivr: "Laatste check",
+    sovendus: "Gefeliciteerd! 🎁"
   };
 
   async function initFlow() {
@@ -25,7 +25,6 @@
       const config = result.data;
 
       if (config) {
-        // ✅ Maak configuratie globaal beschikbaar voor andere modules (zoals de slide-up)
         window.currentCampaignConfig = config;
 
         // UI vullen
@@ -40,17 +39,22 @@
             hero.style.display = 'block';
         }
 
-        // Bepaal flow volgorde
         flowOrder = (config.flow && config.flow.length > 0) ? config.flow : ["lander", "shortform", "coreg", "sovendus"];
 
-        // Initialiseer bolletjes in ELKE sectie
+        // Initialiseer bolletjes + Einddoel
         document.querySelectorAll(".progress-steps").forEach(container => {
             container.innerHTML = "";
-            flowOrder.forEach(() => {
+            flowOrder.forEach((step, idx) => {
                 const dot = document.createElement("div");
                 dot.className = "step-dot";
                 container.appendChild(dot);
             });
+            
+            // Voeg het "cadeau" icoon toe aan het einde
+            const goal = document.createElement("div");
+            goal.className = "progress-goal";
+            goal.innerHTML = "🎁";
+            container.appendChild(goal);
         });
 
         renderStep(0);
@@ -77,21 +81,24 @@
       const dots = target.querySelectorAll(".step-dot");
       
       if (activeBar) {
-        const percentage = ((index + 1) / flowOrder.length) * 100;
-        activeBar.style.width = `${percentage}%`;
+        // Berekening: we willen dat de bar de actieve stap "raakt"
+        const percentage = ((index) / (flowOrder.length)) * 100;
+        // Kleine tweak: als we bij de laatste stap zijn, moet hij 100% zijn
+        const finalPercentage = (index === flowOrder.length - 1) ? 100 : percentage + (100 / flowOrder.length / 2);
+        activeBar.style.width = `${finalPercentage}%`;
       }
       
       if (activeText) activeText.innerText = progressMessages[stepName] || "Even geduld...";
       
+      // Update bolletjes (vinkjes komen via CSS .completed)
       dots.forEach((dot, i) => {
         dot.classList.remove("completed", "active");
         if (i < index) dot.classList.add("completed");
         if (i === index) dot.classList.add("active");
       });
 
-      window.scrollTo(0, 0);
+      window.scrollTo({ top: 0, behavior: 'smooth' });
 
-      // Speciale triggers
       if (stepName === "coreg" && window.initCoregFlow) window.initCoregFlow();
       if (stepName === "sovendus" && window.setupSovendus) window.setupSovendus();
     }
