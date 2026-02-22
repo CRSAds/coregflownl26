@@ -1,6 +1,6 @@
 /**
  * ✅ initFlow-lite.js — UX Verbetering
- * Beheert de progressiebalk met vinkjes en einddoel.
+ * Beheert de progressiebalk met vinkjes, einddoel en vloeiende transities.
  */
 (function () {
   let flowOrder = [];
@@ -27,7 +27,6 @@
       if (config) {
         window.currentCampaignConfig = config;
 
-        // UI vullen
         const titleEl = document.getElementById("campaign-title");
         const paraEl = document.getElementById("campaign-paragraph");
         if(titleEl) titleEl.innerHTML = config.title;
@@ -41,16 +40,14 @@
 
         flowOrder = (config.flow && config.flow.length > 0) ? config.flow : ["lander", "shortform", "coreg", "sovendus"];
 
-        // Initialiseer bolletjes + Einddoel
         document.querySelectorAll(".progress-steps").forEach(container => {
             container.innerHTML = "";
-            flowOrder.forEach((step, idx) => {
+            flowOrder.forEach(() => {
                 const dot = document.createElement("div");
                 dot.className = "step-dot";
                 container.appendChild(dot);
             });
             
-            // Voeg het "cadeau" icoon toe aan het einde
             const goal = document.createElement("div");
             goal.className = "progress-goal";
             goal.innerHTML = "🎁";
@@ -67,41 +64,47 @@
   }
 
   function renderStep(index) {
+    const oldStep = document.querySelector(".flow-section.active");
     currentStepIndex = index;
     const stepName = flowOrder[index];
-    
-    document.querySelectorAll(".flow-section").forEach(s => s.classList.remove("active"));
-    
     const target = document.getElementById(`step-${stepName}`);
-    if (target) {
-      target.classList.add("active");
-      
-      const activeBar = target.querySelector(".progress-bar");
-      const activeText = target.querySelector(".progress-text");
-      const dots = target.querySelectorAll(".step-dot");
-      
-      if (activeBar) {
-        // Berekening: we willen dat de bar de actieve stap "raakt"
-        const percentage = ((index) / (flowOrder.length)) * 100;
-        // Kleine tweak: als we bij de laatste stap zijn, moet hij 100% zijn
-        const finalPercentage = (index === flowOrder.length - 1) ? 100 : percentage + (100 / flowOrder.length / 2);
-        activeBar.style.width = `${finalPercentage}%`;
-      }
-      
-      if (activeText) activeText.innerText = progressMessages[stepName] || "Even geduld...";
-      
-      // Update bolletjes (vinkjes komen via CSS .completed)
-      dots.forEach((dot, i) => {
-        dot.classList.remove("completed", "active");
-        if (i < index) dot.classList.add("completed");
-        if (i === index) dot.classList.add("active");
-      });
 
-      window.scrollTo({ top: 0, behavior: 'smooth' });
+    // Update Progress Bar
+    const progressBar = document.querySelector(".progress-bar");
+    const progressText = document.querySelector(".progress-text");
+    const dots = document.querySelectorAll(".step-dot");
 
-      if (stepName === "coreg" && window.initCoregFlow) window.initCoregFlow();
-      if (stepName === "sovendus" && window.setupSovendus) window.setupSovendus();
+    if (progressBar) {
+      const percentage = (index / (flowOrder.length - 1)) * 100;
+      progressBar.style.width = `${percentage}%`;
     }
+    if (progressText) progressText.innerText = progressMessages[stepName] || "Even geduld...";
+    
+    dots.forEach((dot, i) => {
+      dot.classList.toggle("completed", i < index);
+      dot.classList.toggle("active", i === index);
+    });
+
+    // Vloeiende transitie tussen secties
+    if (oldStep) {
+      oldStep.style.opacity = "0";
+      oldStep.style.transform = "translateY(-10px)";
+      setTimeout(() => {
+        oldStep.classList.remove("active");
+        showNewStep(target, stepName);
+      }, 400);
+    } else {
+      showNewStep(target, stepName);
+    }
+  }
+
+  function showNewStep(target, stepName) {
+    if (!target) return;
+    target.classList.add("active");
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+
+    if (stepName === "coreg" && window.initCoregFlow) window.initCoregFlow();
+    if (stepName === "sovendus" && window.setupSovendus) window.setupSovendus();
   }
 
   function nextStep() {
