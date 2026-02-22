@@ -15,14 +15,16 @@
 <body data-theme="light">
 
     <main id="flow-container" class="main-flow-container">
-        <section id="step-lander" class="flow-section">
-            <div class="progress-wrapper">
-                <div class="progress-text">Ontdek je voordeel</div>
-                <div class="ld-progress-container">
-                    <div class="ld-progress"><div class="progress-bar"></div></div>
-                    <div class="progress-steps"></div>
-                </div>
+        
+        <div id="global-progress" class="progress-wrapper">
+            <div class="progress-text">Even geduld...</div>
+            <div class="ld-progress-container">
+                <div class="ld-progress"><div class="progress-bar"></div></div>
+                <div class="progress-steps"></div>
             </div>
+        </div>
+
+        <section id="step-lander" class="flow-section">
             <div class="section-content text-center">
                 <div class="hero-wrapper">
                     <img id="campaign-hero-image" src="" alt="" style="display:none;">
@@ -36,13 +38,6 @@
         </section>
 
         <section id="step-shortform" class="flow-section">
-            <div class="progress-wrapper">
-                <div class="progress-text">Jouw gegevens</div>
-                <div class="ld-progress-container">
-                    <div class="ld-progress"><div class="progress-bar"></div></div>
-                    <div class="progress-steps"></div>
-                </div>
-            </div>
             <div class="section-content">
                 <form id="lead-form" class="modern-form-v2" data-sponsor-slideup="true">
                     <div class="gender-segment">
@@ -65,38 +60,18 @@
                         <label for="email">E-mailadres</label>
                         <input id="email" type="email" placeholder="Vul je e-mailadres in" required>
                     </div>
-                    <div class="consent-module">
-                        <label class="consent-row required">
-                            <input type="checkbox" required>
-                            <span>Ik ga akkoord met de <button type="button" id="open-actievoorwaarden-inline">actievoorwaarden</button></span>
-                        </label>
-                    </div>
                     <button type="submit" class="cta-primary">Ga verder</button>
                 </form>
             </div>
         </section>
 
         <section id="step-coreg" class="flow-section">
-            <div class="progress-wrapper">
-                <div class="progress-text">Speciaal voor jou</div>
-                <div class="ld-progress-container">
-                    <div class="ld-progress"><div class="progress-bar"></div></div>
-                    <div class="progress-steps"></div>
-                </div>
-            </div>
             <div class="section-content">
                 <div id="coreg-container"></div>
             </div>
         </section>
 
         <section id="step-longform" class="flow-section">
-            <div class="progress-wrapper">
-                <div class="progress-text">Adrescontrole</div>
-                <div class="ld-progress-container">
-                    <div class="ld-progress"><div class="progress-bar"></div></div>
-                    <div class="progress-steps"></div>
-                </div>
-            </div>
             <div class="section-content">
                 <h2 class="text-center">Controleer je adres</h2>
                 <form id="long-form">
@@ -128,13 +103,6 @@
         </section>
 
         <section id="step-ivr" class="flow-section">
-            <div class="progress-wrapper">
-                <div class="progress-text">Verificatie</div>
-                <div class="ld-progress-container">
-                    <div class="ld-progress"><div class="progress-bar"></div></div>
-                    <div class="progress-steps"></div>
-                </div>
-            </div>
             <div class="section-content text-center">
                 <h2>Verificatie</h2>
                 <p>We bellen je nu op voor een korte verificatie.</p>
@@ -143,13 +111,6 @@
         </section>
 
         <section id="step-sovendus" class="flow-section">
-            <div class="progress-wrapper">
-                <div class="progress-text">Klaar! 🎁</div>
-                <div class="ld-progress-container">
-                    <div class="ld-progress"><div class="progress-bar"></div></div>
-                    <div class="progress-steps"></div>
-                </div>
-            </div>
             <div class="section-content">
                 <div id="sovendus-container-1"></div>
             </div>
@@ -163,7 +124,8 @@
     <script src="/coregRenderer.js"></script>
     <script src="/formSubmit.js"></script>
     <script src="/footer-loader.js"></script>
-    <script src="/cosponsors.js"></script> <script src="/consent-module.js"></script>
+    <script src="/cosponsors.js"></script> 
+    <script src="/consent-module.js"></script>
     <script src="/initFlow-lite.js"></script>
 </body>
 </html>
